@@ -291,7 +291,6 @@
         // adds all the games
         function a(){
             document.querySelector(".game-list").innerHTML = games;
-            updateGameLinks();
         }
         a()
 
@@ -299,39 +298,20 @@
             aboutBlankMode = !aboutBlankMode;
             const btn = document.querySelector('.about-blank-toggle');
             btn.classList.toggle('active', aboutBlankMode);
-            updateGameLinks();
         }
 
-        function updateGameLinks() {
-            const gameLinks = document.querySelectorAll('.game-link');
-            gameLinks.forEach(link => {
-                // Store original href
-                if (!link.getAttribute('data-original-href')) {
-                    link.setAttribute('data-original-href', link.href);
-                }
-                
-                if (aboutBlankMode) {
-                    link.addEventListener('click', handleAboutBlankClick);
-                } else {
-                    link.removeEventListener('click', handleAboutBlankClick);
-                    link.href = link.getAttribute('data-original-href');
-                }
-            });
-        }
-
-        function handleAboutBlankClick(e) {
-            e.preventDefault();
-            e.stopPropagation();
-            const url = this.getAttribute('data-original-href');
-            
-            // Open about:blank and redirect
-            const newWindow = window.open('about:blank', '_blank');
-            if (newWindow) {
-                setTimeout(() => {
+        // Use event delegation on the game-list container
+        document.querySelector('.game-list').addEventListener('click', function(e) {
+            const link = e.target.closest('.game-link');
+            if (link && aboutBlankMode) {
+                e.preventDefault();
+                const url = link.href;
+                const newWindow = window.open('about:blank', '_blank');
+                if (newWindow) {
                     newWindow.location.href = url;
-                }, 100);
+                }
             }
-        }
+        });
 
         function randomgame(){
             const games = document.querySelectorAll('.game-link');

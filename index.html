@@ -300,28 +300,22 @@
             btn.classList.toggle('active', aboutBlankMode);
         }
 
-        // Event delegation on game-list - handles clicks on game links
-        document.querySelector('.game-list').addEventListener('click', function(e) {
-            const gameLink = e.target.closest('.game-link');
+        // Wrap the entire game-list element
+        document.addEventListener('click', function(e) {
+            if (!aboutBlankMode) return; // Do nothing if mode is off
             
-            // Only intercept if about:blank mode is ON
-            if (gameLink && aboutBlankMode) {
-                e.preventDefault();
-                e.stopPropagation();
-                
-                const gameUrl = gameLink.getAttribute('href');
-                
-                // Open about:blank in new tab
-                const newTab = window.open('about:blank', '_blank');
-                
-                // Navigate to game after a tiny delay
-                if (newTab) {
-                    setTimeout(() => {
-                        newTab.location.href = gameUrl;
-                    }, 50);
-                }
+            const gameLink = e.target.closest('.game-link');
+            if (!gameLink) return; // Not a game link
+            
+            e.preventDefault();
+            e.stopImmediatePropagation();
+            
+            const url = gameLink.href;
+            const win = window.open('about:blank', '_blank');
+            if (win) {
+                win.location.href = url;
             }
-        }, true); // Use capture phase to ensure we catch it first
+        }, true);
 
         function randomgame(){
             const games = document.querySelectorAll('.game-link');

@@ -300,22 +300,30 @@
             btn.classList.toggle('active', aboutBlankMode);
         }
 
-        // Wrap the entire game-list element
+        // ABOUT:BLANK FEATURE - Listen at capture phase to intercept clicks early
         document.addEventListener('click', function(e) {
-            if (!aboutBlankMode) return; // Do nothing if mode is off
+            // Only process if mode is ON
+            if (!aboutBlankMode) return;
             
-            const gameLink = e.target.closest('.game-link');
-            if (!gameLink) return; // Not a game link
+            // Find closest game-link
+            const link = e.target.closest('.game-link');
+            if (!link) return;
             
+            // Get the URL BEFORE we prevent default
+            const url = link.href;
+            
+            // STOP everything - prevent default AND stop propagation
             e.preventDefault();
             e.stopImmediatePropagation();
             
-            const url = gameLink.href;
-            const win = window.open('about:blank', '_blank');
-            if (win) {
-                win.location.href = url;
+            // Open about:blank in new tab and navigate
+            const newWindow = window.open('about:blank', '_blank');
+            if (newWindow) {
+                setTimeout(() => {
+                    newWindow.location.href = url;
+                }, 10);
             }
-        }, true);
+        }, true); // CAPTURE PHASE - this is key!
 
         function randomgame(){
             const games = document.querySelectorAll('.game-link');

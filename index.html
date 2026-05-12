@@ -3,410 +3,707 @@
 <head>
     <link rel="icon" type="image/png" href="favicon.png">
     <meta charset="UTF-8">
-    <title>Univeristy of Adelaide</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chicken Kings Vault</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
     <style>
-        .discord-link {
-            margin: 20px 0;
-            font-size: 18px;
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+        :root {
+            --bg: #0d0d0f;
+            --surface: #141416;
+            --surface2: #1c1c20;
+            --border: rgba(255,255,255,0.07);
+            --border-hover: rgba(255,255,255,0.15);
+            --text: #f0ede8;
+            --muted: #7a7875;
+            --accent: #e8b84b;
+            --accent2: #c8503a;
+            --accent-glow: rgba(232,184,75,0.15);
+            --radius: 12px;
+            --card-radius: 14px;
         }
-        .discord-link a {
-            color: #7289DA;
-            text-decoration: none;
-        }
-        .discord-link a:hover {
-            text-decoration: underline;
-        }
-        body {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
+
+        html, body {
             min-height: 100vh;
-            margin: 0;
-            background: #222;
+            background: var(--bg);
+            color: var(--text);
+            font-family: 'DM Sans', sans-serif;
+            font-size: 15px;
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        /* Subtle grain overlay */
+        body::before {
+            content: '';
+            position: fixed;
+            inset: 0;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+            pointer-events: none;
+            z-index: 0;
+            opacity: 0.4;
+        }
+
+        /* ─── Layout ─── */
+        .page {
+            position: relative;
+            z-index: 1;
+            max-width: 1360px;
+            margin: 0 auto;
+            padding: 0 24px 80px;
+        }
+
+        /* ─── Header ─── */
+        header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 28px 0 36px;
+            gap: 16px;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            cursor: pointer;
+            user-select: none;
+        }
+
+        .logo-icon {
+            width: 38px;
+            height: 38px;
+            object-fit: contain;
+            transition: transform 0.3s ease;
+        }
+
+        .logo:hover .logo-icon { transform: rotate(-12deg) scale(1.1); }
+
+        .logo-text {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 2rem;
+            letter-spacing: 0.06em;
+            color: var(--text);
+            line-height: 1;
+        }
+
+        .logo-text span { color: var(--accent); }
+
+        /* ─── Header actions ─── */
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 7px;
+            padding: 9px 16px;
+            border-radius: 8px;
+            border: 1px solid var(--border);
+            background: var(--surface);
+            color: var(--muted);
+            font-size: 13px;
+            font-family: 'DM Sans', sans-serif;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            text-decoration: none;
+            white-space: nowrap;
+        }
+
+        .btn:hover {
+            border-color: var(--border-hover);
+            color: var(--text);
+            background: var(--surface2);
+        }
+
+        .btn-accent {
+            background: var(--accent);
+            border-color: var(--accent);
+            color: #0d0d0f;
+        }
+
+        .btn-accent:hover {
+            background: #f0c85a;
+            border-color: #f0c85a;
+            color: #0d0d0f;
+        }
+
+        /* about:blank button states */
+        .btn-ab {
+            position: relative;
+        }
+
+        .btn-ab.active {
+            background: #1a2e1a;
+            border-color: #3d7a3d;
+            color: #6fcf6f;
+        }
+
+        .btn-ab.active::after {
+            content: '';
+            position: absolute;
+            top: 8px;
+            right: 10px;
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: #6fcf6f;
+            animation: pulse-dot 1.5s infinite;
+        }
+
+        @keyframes pulse-dot {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.5; transform: scale(0.7); }
+        }
+
+        .discord-btn {
+            background: #5865F2;
+            border-color: #5865F2;
             color: #fff;
         }
-        .site-logo {
-            font-size: 2.2rem;
-            font-weight: 900;
-            color: #ffffff;
-            text-shadow: 0 0 8px rgba(0,0,0,0.5);
-            margin: 0 0 20px;
-            display: inline-flex;
-            align-items: center;
-            gap: 0.6rem;
-            padding: 8px 14px;
-            border-radius: 16px;
-            background: #222;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+
+        .discord-btn:hover {
+            background: #4752c4;
+            border-color: #4752c4;
+            color: #fff;
         }
-        .logo-icon {
-            width: 32px;
-            height: 32px;
-            object-fit: contain;
-            display: inline-block;
-        }
-        .discord-top-right {
-            position: fixed;
-            top: 14px;
-            right: 14px;
-            z-index: 999;
-            background: #5865F2;
-            border-radius: 12px;
-            width: 46px;
-            height: 46px;
+
+        /* ─── Hero bar ─── */
+        .hero-bar {
             display: flex;
-            align-items: center;
-            justify-content: center;
-            box-shadow: 0 4px 14px rgba(0,0,0,0.35);
-        }
-        .discord-top-right img {
-            width: 26px;
-            height: 26px;
-            border-radius: 50%;
-        }
-        .discord-top-right a {
-            display: inline-flex;
-            width: 100%;
-            height: 100%;
-            align-items: center;
-            justify-content: center;
-        }
-        .center-content {
-            text-align: center;
-        }
-        .game-list {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
-            gap: 24px;
-            justify-items: center;
-            margin-top: 30px;
-            width: 100%;
-            max-width: 1280px;
-            padding: 0 16px;
-            transition: transform 0.1s ease-out;
-            transform-origin: 50% 2%;
-        }
-        .search-container {
-            margin-top: 18px;
-            width: 100%;
-            display: flex;
-            justify-content: center;
-            gap: 10px;
+            align-items: stretch;
+            gap: 16px;
+            margin-bottom: 28px;
             flex-wrap: wrap;
         }
-        .search-input {
-            width: 720px;
-            max-width: calc(100% - 40px);
-            padding: 10px 14px;
-            border-radius: 8px;
-            border: 1px solid rgba(255,255,255,0.12);
-            background: rgba(255,255,255,0.04);
-            color: #fff;
-            font-size: 16px;
-            outline: none;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.5);
-        }
-        .search-input::placeholder { color: rgba(255,255,255,0.55); }
-        .search-count {
-            display: none;
-        }
-        .no-results {
-            margin-top: 18px;
-            color: #ff6b6b;
-            font-weight: bold;
-            display: none;
-        }
-        .game-link {
+
+        /* Random game spotlight */
+        .spotlight {
+            flex: 0 0 auto;
+            width: 200px;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--card-radius);
+            padding: 14px;
             display: flex;
             flex-direction: column;
             align-items: center;
+            gap: 8px;
             text-decoration: none;
-            color: #ffffff;
-            font-size: 1.2em;
-            width: 100%;
-            max-width: 220px;
+            color: var(--text);
+            transition: all 0.25s ease;
+            position: relative;
+            overflow: hidden;
         }
-        .game-link img {
-            width: 100%;
-            height: auto;
-            aspect-ratio: 1 / 1;
+
+        .spotlight::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(ellipse at 50% 0%, var(--accent-glow) 0%, transparent 70%);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .spotlight:hover::before { opacity: 1; }
+
+        .spotlight:hover {
+            border-color: rgba(232,184,75,0.3);
+            transform: translateY(-3px);
+        }
+
+        .spotlight-label {
+            font-size: 10px;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            color: var(--accent);
+            font-weight: 600;
+        }
+
+        .spotlight img {
+            width: 100px;
+            height: 100px;
             object-fit: cover;
             border-radius: 10px;
-            box-shadow: 0 4px 16px rgba(0,0,0,0.5);
-            margin-bottom: 10px;
+            border: 1px solid var(--border);
         }
-        .game-link:hover {
-            text-decoration: underline;
+
+        .spotlight-name {
+            font-size: 13px;
+            font-weight: 500;
+            text-align: center;
+            line-height: 1.3;
         }
-        .random {
+
+        .spotlight-sub {
+            font-size: 11px;
+            color: var(--muted);
+        }
+
+        /* Search area */
+        .search-wrap {
+            flex: 1 1 320px;
             display: flex;
+            flex-direction: column;
+            gap: 12px;
             justify-content: center;
-            align-items: center;
         }
-        .game-rand {
+
+        .search-box {
             display: flex;
-            flex-direction: column;
             align-items: center;
-            text-decoration: none;
-            color: #ffffff;
-            font-size: 0.8em;
-            width: 100%;
-            max-width: 220px;
-        }
-        .game-rand img {
-            width: 50%;
-            height: auto;
-            aspect-ratio: 1 / 1;
-            object-fit: cover;
+            gap: 0;
+            background: var(--surface);
+            border: 1px solid var(--border);
             border-radius: 10px;
-            box-shadow: 0 4px 16px rgba(0,0,0,0.5);
-            margin-bottom: 10px;
+            overflow: hidden;
+            transition: border-color 0.2s;
         }
-        .game-rand:hover {
-            text-decoration: underline;
+
+        .search-box:focus-within {
+            border-color: rgba(232,184,75,0.4);
+            box-shadow: 0 0 0 3px rgba(232,184,75,0.08);
         }
-    
-        /* --- Added Hover Effects --- */
+
+        .search-icon {
+            padding: 0 12px;
+            color: var(--muted);
+            font-size: 16px;
+            display: flex;
+            align-items: center;
+        }
+
+        .search-input {
+            flex: 1;
+            padding: 12px 14px 12px 4px;
+            background: transparent;
+            border: none;
+            color: var(--text);
+            font-size: 15px;
+            font-family: 'DM Sans', sans-serif;
+            outline: none;
+        }
+
+        .search-input::placeholder { color: var(--muted); }
+
+        .search-clear {
+            width: 36px;
+            height: 36px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--muted);
+            cursor: pointer;
+            font-size: 18px;
+            transition: color 0.2s;
+            margin: 4px;
+            border-radius: 6px;
+            display: none;
+        }
+
+        .search-clear:hover { color: var(--text); background: var(--surface2); }
+
+        .search-meta {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .search-count {
+            font-size: 12px;
+            color: var(--muted);
+        }
+
+        .search-count strong { color: var(--text); }
+
+        .btn-row {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        /* ─── Divider ─── */
+        .divider {
+            height: 1px;
+            background: var(--border);
+            margin-bottom: 28px;
+        }
+
+        /* ─── Game Grid ─── */
+        #game-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(148px, 1fr));
+            gap: 18px;
+        }
+
         .game-link {
             display: flex;
             flex-direction: column;
             align-items: center;
             text-decoration: none;
-            color: #ffffff;
-            font-size: 1.2em;
-            width: 100%;
-            max-width: 220px;
-            transition: transform 0.25s ease, filter 0.25s ease;
-        }
-        .game-link img {
-            width: 100%;
-            height: auto;
-            aspect-ratio: 1 / 1;
-            object-fit: cover;
-            border-radius: 10px;
-            box-shadow: 0 4px 16px rgba(0,0,0,0.5);
-            margin-bottom: 10px;
-            transition: transform 0.25s ease, box-shadow 0.25s ease;
-        }
-        .game-link:hover {
-            transform: translateY(-6px);
-            filter: brightness(1.08);
-        }
-        .game-link:hover img {
-            transform: scale(1.05);
-            box-shadow: 0 6px 22px rgba(255,255,255,0.25);
-        }
-        .game-link:hover div {
-            text-decoration: underline;
-            filter: brightness(1.2);
-        }
-
-        .game-rand {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            text-decoration: none;
-            color: #ffffff;
-            font-size: 0.8em;
-            width: 100%;
-            max-width: 220px;
-            transition: transform 0.25s ease, filter 0.25s ease;
-        }
-        .game-rand img {
-            width: 50%;
-            height: auto;
-            aspect-ratio: 1 / 1;
-            object-fit: cover;
-            border-radius: 10px;
-            box-shadow: 0 4px 16px rgba(0,0,0,0.5);
-            margin-bottom: 10px;
-            transition: transform 0.25s ease, box-shadow 0.25s ease;
-        }
-        .game-rand:hover {
-            transform: translateY(-6px);
-            filter: brightness(1.08);
-        }
-        .game-rand:hover img {
-            transform: scale(1.05);
-            box-shadow: 0 6px 22px rgba(255,255,255,0.25);
-        }
-        .game-rand:hover div {
-            text-decoration: underline;
-            filter: brightness(1.2);
-        }
-
-        .redobutton, .about-blank-toggle {
-            padding: 8px 16px;
-            margin: 5px;
-            border-radius: 6px;
-            border: none;
-            background: #5865F2;
-            color: #fff;
+            color: var(--text);
+            gap: 8px;
             cursor: pointer;
-            font-size: 14px;
-            transition: background 0.25s ease;
+            position: relative;
         }
 
-        .redobutton:hover, .about-blank-toggle:hover {
-            background: #4752C4;
+        .game-thumb {
+            width: 100%;
+            aspect-ratio: 1;
+            object-fit: cover;
+            border-radius: var(--card-radius);
+            border: 1px solid var(--border);
+            transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+            display: block;
         }
 
-        .about-blank-toggle.active {
-            background: #43B581;
+        .game-name {
+            font-size: 12.5px;
+            font-weight: 500;
+            text-align: center;
+            color: var(--muted);
+            transition: color 0.2s;
+            line-height: 1.3;
+        }
+
+        .game-link:hover .game-thumb {
+            transform: translateY(-5px) scale(1.03);
+            box-shadow: 0 12px 32px rgba(0,0,0,0.5), 0 0 0 1px rgba(232,184,75,0.2);
+            border-color: rgba(232,184,75,0.2);
+        }
+
+        .game-link:hover .game-name {
+            color: var(--text);
+        }
+
+        /* ─── No results ─── */
+        #no-results {
+            display: none;
+            text-align: center;
+            padding: 80px 24px;
+            color: var(--muted);
+        }
+
+        #no-results .nr-icon { font-size: 40px; margin-bottom: 12px; }
+        #no-results p { font-size: 15px; }
+
+        /* ─── Spinny mode ─── */
+        #game-list.spinning {
+            transform-origin: center top;
+        }
+
+        /* ─── Footer ─── */
+        footer {
+            text-align: center;
+            padding: 32px 0 0;
+            color: var(--muted);
+            font-size: 12px;
+            border-top: 1px solid var(--border);
+            margin-top: 60px;
+        }
+
+        footer a { color: var(--muted); text-decoration: underline; }
+
+        /* ─── About:blank toast ─── */
+        #ab-toast {
+            position: fixed;
+            bottom: 24px;
+            left: 50%;
+            transform: translateX(-50%) translateY(80px);
+            background: #1a2e1a;
+            border: 1px solid #3d7a3d;
+            color: #6fcf6f;
+            padding: 10px 20px;
+            border-radius: 100px;
+            font-size: 13px;
+            font-weight: 500;
+            z-index: 999;
+            transition: transform 0.35s cubic-bezier(0.34,1.56,0.64,1);
+            white-space: nowrap;
+            pointer-events: none;
+        }
+
+        #ab-toast.show { transform: translateX(-50%) translateY(0); }
+
+        /* ─── Responsive ─── */
+        @media (max-width: 640px) {
+            header { flex-wrap: wrap; }
+            .spotlight { display: none; }
+            #game-list { grid-template-columns: repeat(auto-fill, minmax(110px, 1fr)); gap: 12px; }
         }
     </style>
 </head>
 <body>
-    <div class="discord-top-right">
-        <a href="https://discord.gg/RgGKcZxq4T" target="_blank" rel="noopener noreferrer" aria-label="Join the Discord server">
-            <img src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/discord.svg" alt="Discord logo" />
+<div class="page">
+
+    <!-- Header -->
+    <header>
+        <div class="logo" onclick="spinnywheel()">
+            <img src="favicon.png" alt="logo" class="logo-icon" id="logo-img">
+            <div class="logo-text">Chicken <span>Kings</span> Vault</div>
+        </div>
+
+        <div class="header-actions">
+            <button class="btn btn-ab" id="ab-btn" onclick="toggleAboutBlank()" title="about:blank disguise — games open in a hidden tab with a clean URL">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+                about:blank
+            </button>
+            <a class="btn discord-btn" href="https://discord.gg/RgGKcZxq4T" target="_blank" rel="noopener noreferrer" title="Join the Discord server">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M20.317 4.37a19.79 19.79 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028 14.09 14.09 0 0 0 1.226-1.994.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03z"/></svg>
+                Discord
+            </a>
+        </div>
+    </header>
+
+    <!-- Hero bar -->
+    <div class="hero-bar">
+
+        <!-- Spotlight random game -->
+        <a class="spotlight" id="spotlight-link" href="#" onclick="handleSpotlight(event)">
+            <div class="spotlight-label">✦ Featured</div>
+            <img id="spotlight-img" src="" alt="">
+            <div class="spotlight-name" id="spotlight-name">Loading…</div>
+            <div class="spotlight-sub">click to play</div>
         </a>
-    </div>
-    <h1 class="site-logo"><a onclick="spinnywheel(true)" class="logo-icon"><img src="favicon.png" alt="logo"></a>Chicken Kings Vault<a href="https://youtu.be/BXJjBo_u3WM?si=U_8QGjcfUxvZm0IM" target="_blank" class="logo-icon"><img src="favicon.png" alt="logo"></a></h1>
-    <div class="center-content">
-        <p>might be a cool game or something</p>
-        <div class="random">
-            <button class="redobutton" onclick="randomgame()">I don't like this game</button>
+
+        <!-- Search + controls -->
+        <div class="search-wrap">
+            <div class="search-box">
+                <div class="search-icon">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+                </div>
+                <input id="search-input" class="search-input" type="search" placeholder="Search games…" aria-label="Search games" autocomplete="off">
+                <button class="search-clear" id="search-clear" aria-label="Clear search" onclick="clearSearch()">×</button>
+            </div>
+            <div class="search-meta">
+                <div class="search-count" id="search-count">Loading games…</div>
+                <div class="btn-row">
+                    <button class="btn" id="random-btn" onclick="pickRandom()">
+                        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="16 3 21 3 21 8"/><line x1="4" y1="20" x2="21" y2="3"/><polyline points="21 16 21 21 16 21"/><line x1="15" y1="15" x2="21" y2="21"/></svg>
+                        Random game
+                    </button>
+                    <button class="btn" id="spinny-btn" onclick="spinnywheel()">
+                        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21.5 2v6h-6M2.5 22v-6h6M2 11.5a10 10 0 0 1 18.8-4.3M22 12.5a10 10 0 0 1-18.8 4.2"/></svg>
+                        Spin
+                    </button>
+                </div>
+            </div>
         </div>
+    </div>
+
+    <div class="divider"></div>
+
+    <!-- Game Grid (games.js injects .game-link anchors here) -->
+    <div id="game-list"></div>
+
+    <div id="no-results">
+        <div class="nr-icon">🔍</div>
+        <p>No games match your search.</p>
+    </div>
+
+    <footer>
         <p>All game credits go to gn-math, truffled.lol and Ultimate Game Stash</p>
-        <div class="search-container">
-            <input id="search-input" class="search-input" type="search" placeholder="Search games..." aria-label="Search games">
-            <button class="about-blank-toggle" onclick="toggleAboutBlank()" title="Enable about:blank disguise">about:blank</button>
-        </div>
-        <button onclick="spinnywheel()">spinny</button>
-        <div class="game-list">
-        </div>
-        <div id="no-results" class="no-results">No games match your search.</div>
-    </div>
-    <!--leave this script block empty it's only here to load games.js-->
-    <script src="games.js"></script>
-    <script>
-        const gameList = document.querySelector('.game-list')
-        let spinny = false
-        let inbt = null
-        let number = 0;
-        let aboutBlankMode = false;
+    </footer>
+</div>
 
-        // adds all the games
-        function a(){
-            document.querySelector(".game-list").innerHTML = games;
+<!-- about:blank toast notification -->
+<div id="ab-toast">🔒 about:blank mode on — games open in disguised tabs</div>
+
+<!-- Load game list from games.js (must define window.games as HTML string or array) -->
+<script src="games.js"></script>
+
+<script>
+(function () {
+    /* ── Inject games ───────────────────────────────────────────────── */
+    const gameList = document.getElementById('game-list');
+
+    // games.js sets window.games as an HTML string of .game-link anchors
+    if (typeof games !== 'undefined') {
+        gameList.innerHTML = games;
+    }
+
+    // Restyle injected thumbnails to use our class
+    gameList.querySelectorAll('.game-link img').forEach(img => {
+        img.classList.add('game-thumb');
+    });
+
+    // Wrap text nodes in a span for styling
+    gameList.querySelectorAll('.game-link').forEach(a => {
+        a.childNodes.forEach(n => {
+            if (n.nodeType === 3 && n.textContent.trim()) {
+                const span = document.createElement('div');
+                span.className = 'game-name';
+                span.textContent = n.textContent.trim();
+                n.replaceWith(span);
+            }
+        });
+    });
+
+    /* ── Sort alphabetically ────────────────────────────────────────── */
+    const items = Array.from(gameList.querySelectorAll('.game-link'));
+    items.sort((a, b) =>
+        (a.textContent || '').trim().toLowerCase()
+            .localeCompare((b.textContent || '').trim().toLowerCase(), undefined, { numeric: true })
+    );
+    items.forEach(i => gameList.appendChild(i));
+
+    const total = items.length;
+
+    /* ── Search ─────────────────────────────────────────────────────── */
+    const input = document.getElementById('search-input');
+    const clearBtn = document.getElementById('search-clear');
+    const countEl = document.getElementById('search-count');
+    const noResults = document.getElementById('no-results');
+
+    input.placeholder = `Search ${total} games…`;
+
+    function updateCount(visible) {
+        countEl.innerHTML = input.value.trim()
+            ? `<strong>${visible}</strong> of ${total} games`
+            : `<strong>${total}</strong> games`;
+    }
+
+    updateCount(total);
+
+    function filterGames() {
+        const q = input.value.trim().toLowerCase();
+
+        // easter egg
+        if (q === 'end') { window.open('https://youtu.be/eVTXPUF4Oz4?si=fJegVrBYO1yf0I80'); }
+
+        clearBtn.style.display = q ? 'flex' : 'none';
+
+        let visible = 0;
+        items.forEach(a => {
+            const title = (a.textContent || '').trim().toLowerCase();
+            const show = !q || title.includes(q);
+            a.style.display = show ? '' : 'none';
+            if (show) visible++;
+        });
+
+        noResults.style.display = visible === 0 ? 'block' : 'none';
+        updateCount(visible);
+    }
+
+    input.addEventListener('input', filterGames);
+    input.addEventListener('keydown', e => { if (e.key === 'Escape') clearSearch(); });
+
+    window.clearSearch = function () {
+        input.value = '';
+        filterGames();
+        input.focus();
+    };
+
+    /* ── Spotlight (random featured game) ──────────────────────────── */
+    function pickSpotlight() {
+        if (!items.length) return;
+        const r = items[Math.floor(Math.random() * items.length)];
+        const img = r.querySelector('img');
+        const name = r.querySelector('.game-name');
+        const spotImg = document.getElementById('spotlight-img');
+        const spotName = document.getElementById('spotlight-name');
+        const spotLink = document.getElementById('spotlight-link');
+        if (img) spotImg.src = img.src;
+        if (name) spotName.textContent = name.textContent;
+        spotLink.dataset.href = r.href || '';
+    }
+
+    window.pickRandom = pickSpotlight; // random btn triggers same
+    pickSpotlight();
+
+    /* ── Handle spotlight click ─────────────────────────────────────── */
+    window.handleSpotlight = function (e) {
+        e.preventDefault();
+        const url = document.getElementById('spotlight-link').dataset.href;
+        if (!url) return;
+        if (aboutBlankMode) {
+            openInAboutBlank(url);
+        } else {
+            window.open(url, '_blank', 'noopener');
         }
-        a()
+    };
 
-        function toggleAboutBlank() {
-            aboutBlankMode = !aboutBlankMode;
-            const btn = document.querySelector('.about-blank-toggle');
-            btn.classList.toggle('active', aboutBlankMode);
+    /* ─────────────────────────────────────────────────────────────────
+       ABOUT:BLANK MODE
+       The real disguise: opens a new tab whose URL/title stays as
+       about:blank but renders the game inside a full-screen iframe.
+       The tab shows "about:blank" in the address bar — not the game URL.
+    ───────────────────────────────────────────────────────────────── */
+    let aboutBlankMode = false;
+
+    function openInAboutBlank(url) {
+        const w = window.open('about:blank', '_blank');
+        if (!w) { alert('Allow pop-ups for about:blank mode to work!'); return; }
+
+        // Write a full-screen iframe into the blank tab
+        w.document.open();
+        w.document.write(
+            '<!DOCTYPE html><html><head>' +
+            '<title>New Tab</title>' +
+            '<style>*{margin:0;padding:0;border:0;overflow:hidden}html,body,iframe{width:100%;height:100%;display:block}</style>' +
+            '</head><body>' +
+            '<iframe src="' + url.replace(/"/g, '&quot;') + '" allowfullscreen></iframe>' +
+            '</body></html>'
+        );
+        w.document.close();
+    }
+
+    window.toggleAboutBlank = function () {
+        aboutBlankMode = !aboutBlankMode;
+        const btn = document.getElementById('ab-btn');
+        const toast = document.getElementById('ab-toast');
+        btn.classList.toggle('active', aboutBlankMode);
+        toast.classList.toggle('show', aboutBlankMode);
+        if (aboutBlankMode) {
+            setTimeout(() => toast.classList.remove('show'), 3500);
         }
+    };
 
-        // ABOUT:BLANK FEATURE - Listen at capture phase to intercept clicks early
-        document.addEventListener('click', function(e) {
-            // Only process if mode is ON
-            if (!aboutBlankMode) return;
-            
-            // Find closest game-link
-            const link = e.target.closest('.game-link');
-            if (!link) return;
-            
-            // Get the URL BEFORE we prevent default
-            const url = link.href;
-            
-            // STOP everything - prevent default AND stop propagation
-            e.preventDefault();
-            e.stopImmediatePropagation();
-            
-            // Open about:blank in new tab and navigate
-            const newWindow = window.open('about:blank', '_blank');
-            if (newWindow) {
-                setTimeout(() => {
-                    newWindow.location.href = url;
-                }, 10);
-            }
-        }, true); // CAPTURE PHASE - this is key!
+    // Capture all game-link clicks and redirect through about:blank if active
+    document.addEventListener('click', function (e) {
+        if (!aboutBlankMode) return;
+        const link = e.target.closest('#game-list .game-link');
+        if (!link) return;
+        e.preventDefault();
+        e.stopImmediatePropagation();
+        openInAboutBlank(link.href);
+    }, true);
 
-        function randomgame(){
-            const games = document.querySelectorAll('.game-link');
-            const range = games.length - 1 + 1;
-            const array = new Uint32Array(1);
-            window.crypto.getRandomValues(array);
-            let thing = 1 + (array[0] % range);
-            const newnode = games[thing].cloneNode(true)
-            if(document.querySelector('.game-rand') != null){
-                document.querySelector('.game-rand').remove()
-            }
-            document.querySelector('.random').appendChild(newnode);
-            newnode.classList.remove('game-link');
-            newnode.classList.add("game-rand")
+    /* ── Spinny wheel ───────────────────────────────────────────────── */
+    let spinning = false;
+    let spinAngle = 0;
+    let spinInterval = null;
+
+    window.spinnywheel = function () {
+        const btn = document.getElementById('spinny-btn');
+        if (!spinning) {
+            spinning = true;
+            btn.style.color = 'var(--accent)';
+            spinInterval = setInterval(() => {
+                spinAngle++;
+                gameList.style.transform = `rotate(${spinAngle}deg)`;
+            }, 16);
+        } else {
+            spinning = false;
+            btn.style.color = '';
+            clearInterval(spinInterval);
+            spinInterval = null;
+            // snap back smoothly
+            gameList.style.transition = 'transform 0.6s cubic-bezier(0.25,1,0.5,1)';
+            gameList.style.transform = 'rotate(0deg)';
+            setTimeout(() => { gameList.style.transition = ''; spinAngle = 0; }, 650);
         }
-        randomgame()
-        function spinnywheel(reset=false) {
-            if(reset === true){number=0; gameList.style.transform = `rotate(${0}deg)`; return}
-            if(!spinny){
-                spinny = true;
+    };
 
-                inbt = setInterval(() => {
-                    number++;
-                    gameList.style.transform = `rotate(${number}deg)`;
-                }, 20);
-            }else{
-                spinny = false;
-                clearInterval(inbt);
-                inbt = null;
-            }
-        }
-    </script>
-    <script>
-        (function(){
-            function sortGameListAlpha(){
-                const list = document.querySelector('.game-list');
-                if(!list) return;
-                const items = Array.from(list.querySelectorAll('.game-link'));
-                items.sort((a,b) => {
-                    const ta = (a.textContent || '').trim().toLowerCase();
-                    const tb = (b.textContent || '').trim().toLowerCase();
-                    return ta.localeCompare(tb, undefined, {numeric: true});
-                });
-                items.forEach(i => list.appendChild(i));
-            }
-            sortGameListAlpha();
-
-            const input = document.getElementById('search-input');
-            const gameList = document.querySelectorAll('.game-link');
-            const noResults = document.getElementById('no-results');
-            const total = gameList.length;
-            // initialize placeholder with total games
-            if(input){
-                input.placeholder = `Search ${total} Games...`;
-                input.setAttribute('aria-label', `Search ${total} Games...`);
-            }
-
-            function normalize(text){
-                return text.trim().toLowerCase();
-            }
-
-            function filterGames(){
-                const q = normalize(input.value || '');
-                let visible = 0;
-                if(q == "end") {
-                    window.open("https://youtu.be/eVTXPUF4Oz4?si=fJegVrBYO1yf0I80")
-                }
-                gameList.forEach(a => {
-                    const title = normalize(a.textContent || a.innerText || '');
-                    if(q === '' || title.indexOf(q) !== -1){
-                        a.style.display = '';
-                        visible++;
-                    } else {
-                        a.style.display = 'none';
-                    }
-                });
-                noResults.style.display = visible === 0 ? 'block' : 'none';
-            }
-
-            input.addEventListener('input', filterGames);
-            
-            input.addEventListener('keydown', (e) => { if(e.key === 'Escape'){ input.value = ''; filterGames(); } });
-        })();
-    </script>
+})();
+</script>
 </body>
 </html>

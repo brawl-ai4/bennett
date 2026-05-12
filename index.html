@@ -305,42 +305,31 @@
         function updateGameLinks() {
             const gameLinks = document.querySelectorAll('.game-link');
             gameLinks.forEach(link => {
+                // Store original href
+                if (!link.getAttribute('data-original-href')) {
+                    link.setAttribute('data-original-href', link.href);
+                }
+                
                 if (aboutBlankMode) {
-                    const originalHref = link.getAttribute('data-original-href');
-                    if (!originalHref) {
-                        link.setAttribute('data-original-href', link.href);
-                    }
-                    link.href = 'javascript:void(0)';
-                    link.onclick = function(e) {
-                        e.preventDefault();
-                        openGameInBlankWindow(this.getAttribute('data-original-href'));
-                    };
+                    link.addEventListener('click', handleAboutBlankClick);
                 } else {
-                    const originalHref = link.getAttribute('data-original-href');
-                    if (originalHref) {
-                        link.href = originalHref;
-                        link.onclick = null;
-                    }
+                    link.removeEventListener('click', handleAboutBlankClick);
+                    link.href = link.getAttribute('data-original-href');
                 }
             });
         }
 
-        function openGameInBlankWindow(url) {
-            const win = window.open('about:blank', '_blank');
-            if (win) {
-                win.document.write(`
-                    <!DOCTYPE html>
-                    <html>
-                    <head>
-                        <title>about:blank</title>
-                        <script>
-                            window.location.replace('${url}');
-                        <\/script>
-                    </head>
-                    <body></body>
-                    </html>
-                `);
-                win.document.close();
+        function handleAboutBlankClick(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            const url = this.getAttribute('data-original-href');
+            
+            // Open about:blank and redirect
+            const newWindow = window.open('about:blank', '_blank');
+            if (newWindow) {
+                setTimeout(() => {
+                    newWindow.location.href = url;
+                }, 100);
             }
         }
 

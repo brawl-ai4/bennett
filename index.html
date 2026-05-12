@@ -92,6 +92,8 @@
             width: 100%;
             display: flex;
             justify-content: center;
+            gap: 10px;
+            flex-wrap: wrap;
         }
         .search-input {
             width: 720px;
@@ -233,6 +235,26 @@
             text-decoration: underline;
             filter: brightness(1.2);
         }
+
+        .redobutton, .about-blank-toggle {
+            padding: 8px 16px;
+            margin: 5px;
+            border-radius: 6px;
+            border: none;
+            background: #5865F2;
+            color: #fff;
+            cursor: pointer;
+            font-size: 14px;
+            transition: background 0.25s ease;
+        }
+
+        .redobutton:hover, .about-blank-toggle:hover {
+            background: #4752C4;
+        }
+
+        .about-blank-toggle.active {
+            background: #43B581;
+        }
     </style>
 </head>
 <body>
@@ -250,6 +272,7 @@
         <p>All game credits go to gn-math, truffled.lol and Ultimate Game Stash</p>
         <div class="search-container">
             <input id="search-input" class="search-input" type="search" placeholder="Search games..." aria-label="Search games">
+            <button class="about-blank-toggle" onclick="toggleAboutBlank()" title="Enable about:blank disguise">about:blank</button>
         </div>
         <button onclick="spinnywheel()">spinny</button>
         <div class="game-list">
@@ -263,11 +286,63 @@
         let spinny = false
         let inbt = null
         let number = 0;
+        let aboutBlankMode = false;
+
         // adds all the games
         function a(){
             document.querySelector(".game-list").innerHTML = games;
+            updateGameLinks();
         }
         a()
+
+        function toggleAboutBlank() {
+            aboutBlankMode = !aboutBlankMode;
+            const btn = document.querySelector('.about-blank-toggle');
+            btn.classList.toggle('active', aboutBlankMode);
+            updateGameLinks();
+        }
+
+        function updateGameLinks() {
+            const gameLinks = document.querySelectorAll('.game-link');
+            gameLinks.forEach(link => {
+                if (aboutBlankMode) {
+                    const originalHref = link.getAttribute('data-original-href');
+                    if (!originalHref) {
+                        link.setAttribute('data-original-href', link.href);
+                    }
+                    link.href = 'javascript:void(0)';
+                    link.onclick = function(e) {
+                        e.preventDefault();
+                        openGameInBlankWindow(this.getAttribute('data-original-href'));
+                    };
+                } else {
+                    const originalHref = link.getAttribute('data-original-href');
+                    if (originalHref) {
+                        link.href = originalHref;
+                        link.onclick = null;
+                    }
+                }
+            });
+        }
+
+        function openGameInBlankWindow(url) {
+            const win = window.open('about:blank', '_blank');
+            if (win) {
+                win.document.write(`
+                    <!DOCTYPE html>
+                    <html>
+                    <head>
+                        <title>about:blank</title>
+                        <script>
+                            window.location.replace('${url}');
+                        <\/script>
+                    </head>
+                    <body></body>
+                    </html>
+                `);
+                win.document.close();
+            }
+        }
 
         function randomgame(){
             const games = document.querySelectorAll('.game-link');

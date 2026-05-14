@@ -6,21 +6,24 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Chicken Kings Vault</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,400&display=swap" rel="stylesheet">
     <style>
         *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
         :root {
-            --bg: #0d0d0f;
-            --surface: #141416;
-            --surface2: #1c1c20;
-            --border: rgba(255,255,255,0.07);
-            --border-hover: rgba(255,255,255,0.15);
-            --text: #f0ede8;
-            --muted: #7a7875;
+            --bg: #07070a;
+            --surface: #111116;
+            --surface2: #18181f;
+            --surface3: #1e1e27;
+            --border: rgba(255,255,255,0.06);
+            --border-hover: rgba(255,255,255,0.14);
+            --text: #ede9e3;
+            --muted: #6a6870;
             --accent: #e8b84b;
             --accent2: #c8503a;
-            --accent-glow: rgba(232,184,75,0.15);
+            --accent3: #7c5cbf;
+            --accent-dim: rgba(232,184,75,0.12);
+            --accent-glow: rgba(232,184,75,0.22);
             --radius: 12px;
             --card-radius: 14px;
         }
@@ -35,24 +38,38 @@
             overflow-x: hidden;
         }
 
-        /* Subtle grain overlay */
-        body::before {
-            content: '';
+        /* ─── Star Canvas ─── */
+        #star-canvas {
             position: fixed;
             inset: 0;
-            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
             pointer-events: none;
             z-index: 0;
-            opacity: 0.4;
         }
+
+        /* ─── Ambient glow blobs ─── */
+        .ambient {
+            position: fixed;
+            border-radius: 50%;
+            filter: blur(120px);
+            pointer-events: none;
+            z-index: 0;
+            opacity: 0.18;
+        }
+        .ambient-1 { width: 600px; height: 600px; background: #e8b84b; top: -200px; left: -100px; animation: float1 18s ease-in-out infinite; }
+        .ambient-2 { width: 500px; height: 500px; background: #7c5cbf; bottom: -150px; right: -100px; animation: float2 22s ease-in-out infinite; }
+        .ambient-3 { width: 400px; height: 400px; background: #c8503a; top: 40%; left: 60%; animation: float3 16s ease-in-out infinite; opacity: 0.10; }
+
+        @keyframes float1 { 0%,100%{transform:translate(0,0) scale(1)} 50%{transform:translate(60px,40px) scale(1.1)} }
+        @keyframes float2 { 0%,100%{transform:translate(0,0) scale(1)} 50%{transform:translate(-50px,-60px) scale(1.15)} }
+        @keyframes float3 { 0%,100%{transform:translate(0,0)} 50%{transform:translate(-40px,50px)} }
 
         /* ─── Layout ─── */
         .page {
             position: relative;
             z-index: 1;
-            max-width: 1360px;
+            max-width: 1380px;
             margin: 0 auto;
-            padding: 0 24px 80px;
+            padding: 0 28px 100px;
         }
 
         /* ─── Header ─── */
@@ -60,49 +77,78 @@
             display: flex;
             align-items: center;
             justify-content: space-between;
-            padding: 28px 0 36px;
+            padding: 30px 0 40px;
             gap: 16px;
         }
 
         .logo {
             display: flex;
             align-items: center;
-            gap: 12px;
+            gap: 14px;
             cursor: pointer;
             user-select: none;
+            text-decoration: none;
+        }
+
+        .logo-icon-wrap {
+            position: relative;
+            width: 44px;
+            height: 44px;
         }
 
         .logo-icon {
-            width: 38px;
-            height: 38px;
+            width: 44px;
+            height: 44px;
             object-fit: contain;
-            transition: transform 0.3s ease;
+            transition: transform 0.4s cubic-bezier(0.34,1.56,0.64,1);
+            position: relative;
+            z-index: 1;
         }
 
-        .logo:hover .logo-icon { transform: rotate(-12deg) scale(1.1); }
+        .logo-halo {
+            position: absolute;
+            inset: -6px;
+            border-radius: 50%;
+            background: radial-gradient(circle, var(--accent-glow) 0%, transparent 70%);
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .logo:hover .logo-icon { transform: rotate(-14deg) scale(1.12); }
+        .logo:hover .logo-halo { opacity: 1; }
 
         .logo-text {
             font-family: 'Bebas Neue', sans-serif;
-            font-size: 2rem;
-            letter-spacing: 0.06em;
+            font-size: 2.1rem;
+            letter-spacing: 0.07em;
             color: var(--text);
             line-height: 1;
         }
 
         .logo-text span { color: var(--accent); }
+        .logo-tag {
+            font-size: 10px;
+            font-weight: 600;
+            letter-spacing: 0.14em;
+            text-transform: uppercase;
+            color: var(--muted);
+            display: block;
+            margin-top: 1px;
+        }
 
         /* ─── Header actions ─── */
         .header-actions {
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 8px;
+            flex-wrap: wrap;
         }
 
         .btn {
             display: inline-flex;
             align-items: center;
             gap: 7px;
-            padding: 9px 16px;
+            padding: 9px 15px;
             border-radius: 8px;
             border: 1px solid var(--border);
             background: var(--surface);
@@ -114,6 +160,16 @@
             transition: all 0.2s ease;
             text-decoration: none;
             white-space: nowrap;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(135deg, rgba(255,255,255,0.04) 0%, transparent 60%);
+            pointer-events: none;
         }
 
         .btn:hover {
@@ -126,32 +182,35 @@
             background: var(--accent);
             border-color: var(--accent);
             color: #0d0d0f;
+            font-weight: 600;
         }
 
         .btn-accent:hover {
             background: #f0c85a;
             border-color: #f0c85a;
             color: #0d0d0f;
+            box-shadow: 0 0 20px rgba(232,184,75,0.35);
         }
 
-        /* about:blank button states */
+        /* ─── about:blank states ─── */
         .btn-ab {
             position: relative;
         }
 
         .btn-ab.active {
-            background: #1a2e1a;
-            border-color: #3d7a3d;
-            color: #6fcf6f;
+            background: #162116;
+            border-color: #2e6b2e;
+            color: #5ecf5e;
+            box-shadow: 0 0 14px rgba(94,207,94,0.15);
         }
 
         .btn-ab.active::after {
             content: '';
             position: absolute;
-            top: 8px;
+            top: 9px;
             right: 10px;
-            width: 6px;
-            height: 6px;
+            width: 5px;
+            height: 5px;
             border-radius: 50%;
             background: #6fcf6f;
             animation: pulse-dot 1.5s infinite;
@@ -159,19 +218,34 @@
 
         @keyframes pulse-dot {
             0%, 100% { opacity: 1; transform: scale(1); }
-            50% { opacity: 0.5; transform: scale(0.7); }
+            50% { opacity: 0.4; transform: scale(0.65); }
+        }
+
+        /* ─── Direct about:blank button ─── */
+        .btn-ab-direct {
+            background: linear-gradient(135deg, #1a2636 0%, #0f1620 100%);
+            border-color: #2a4a6b;
+            color: #5ab4f0;
+        }
+
+        .btn-ab-direct:hover {
+            background: linear-gradient(135deg, #1e2e42 0%, #131c2b 100%);
+            border-color: #3a6a9b;
+            color: #7fcfff;
+            box-shadow: 0 0 14px rgba(90,180,240,0.18);
         }
 
         .discord-btn {
-            background: #5865F2;
-            border-color: #5865F2;
+            background: #4f5adb;
+            border-color: #4f5adb;
             color: #fff;
         }
 
         .discord-btn:hover {
-            background: #4752c4;
-            border-color: #4752c4;
+            background: #5865F2;
+            border-color: #5865F2;
             color: #fff;
+            box-shadow: 0 0 16px rgba(88,101,242,0.3);
         }
 
         /* ─── Hero bar ─── */
@@ -179,14 +253,14 @@
             display: flex;
             align-items: stretch;
             gap: 16px;
-            margin-bottom: 28px;
+            margin-bottom: 30px;
             flex-wrap: wrap;
         }
 
-        /* Random game spotlight */
+        /* Spotlight */
         .spotlight {
             flex: 0 0 auto;
-            width: 200px;
+            width: 196px;
             background: var(--surface);
             border: 1px solid var(--border);
             border-radius: var(--card-radius);
@@ -206,31 +280,42 @@
             content: '';
             position: absolute;
             inset: 0;
-            background: radial-gradient(ellipse at 50% 0%, var(--accent-glow) 0%, transparent 70%);
+            background: radial-gradient(ellipse at 50% 0%, rgba(232,184,75,0.18) 0%, transparent 70%);
             opacity: 0;
             transition: opacity 0.3s ease;
         }
 
-        .spotlight:hover::before { opacity: 1; }
+        .spotlight::after {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(232,184,75,0.5), transparent);
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .spotlight:hover::before, .spotlight:hover::after { opacity: 1; }
 
         .spotlight:hover {
             border-color: rgba(232,184,75,0.3);
-            transform: translateY(-3px);
+            transform: translateY(-4px);
+            box-shadow: 0 16px 40px rgba(0,0,0,0.5);
         }
 
         .spotlight-label {
             font-size: 10px;
-            letter-spacing: 0.12em;
+            letter-spacing: 0.14em;
             text-transform: uppercase;
             color: var(--accent);
             font-weight: 600;
         }
 
         .spotlight img {
-            width: 100px;
-            height: 100px;
+            width: 104px;
+            height: 104px;
             object-fit: cover;
-            border-radius: 10px;
+            border-radius: 12px;
             border: 1px solid var(--border);
         }
 
@@ -258,12 +343,11 @@
         .search-box {
             display: flex;
             align-items: center;
-            gap: 0;
             background: var(--surface);
             border: 1px solid var(--border);
             border-radius: 10px;
             overflow: hidden;
-            transition: border-color 0.2s;
+            transition: border-color 0.2s, box-shadow 0.2s;
         }
 
         .search-box:focus-within {
@@ -277,11 +361,12 @@
             font-size: 16px;
             display: flex;
             align-items: center;
+            flex-shrink: 0;
         }
 
         .search-input {
             flex: 1;
-            padding: 12px 14px 12px 4px;
+            padding: 12px 8px 12px 0;
             background: transparent;
             border: none;
             color: var(--text);
@@ -293,9 +378,9 @@
         .search-input::placeholder { color: var(--muted); }
 
         .search-clear {
-            width: 36px;
-            height: 36px;
-            display: flex;
+            width: 34px;
+            height: 34px;
+            display: none;
             align-items: center;
             justify-content: center;
             color: var(--muted);
@@ -304,7 +389,8 @@
             transition: color 0.2s;
             margin: 4px;
             border-radius: 6px;
-            display: none;
+            border: none;
+            background: transparent;
         }
 
         .search-clear:hover { color: var(--text); background: var(--surface2); }
@@ -330,18 +416,97 @@
             flex-wrap: wrap;
         }
 
+        /* ─── Stats bar ─── */
+        .stats-bar {
+            display: flex;
+            align-items: center;
+            gap: 24px;
+            padding: 14px 20px;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            margin-bottom: 28px;
+            flex-wrap: wrap;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .stats-bar::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--accent), #7c5cbf, var(--accent2), transparent);
+            opacity: 0.6;
+        }
+
+        .stat-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .stat-dot {
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+            flex-shrink: 0;
+        }
+
+        .stat-dot.gold { background: var(--accent); box-shadow: 0 0 6px var(--accent); }
+        .stat-dot.purple { background: #a07de8; box-shadow: 0 0 6px #a07de8; }
+        .stat-dot.red { background: var(--accent2); box-shadow: 0 0 6px var(--accent2); }
+
+        .stat-label { font-size: 12px; color: var(--muted); }
+        .stat-value { font-size: 13px; font-weight: 600; color: var(--text); }
+
+        .stats-spacer { flex: 1; }
+
         /* ─── Divider ─── */
         .divider {
             height: 1px;
-            background: var(--border);
+            background: linear-gradient(90deg, transparent, var(--border) 20%, var(--border) 80%, transparent);
             margin-bottom: 28px;
+        }
+
+        /* ─── Category pills ─── */
+        .filter-row {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            margin-bottom: 24px;
+        }
+
+        .pill {
+            padding: 5px 13px;
+            border-radius: 100px;
+            border: 1px solid var(--border);
+            background: var(--surface);
+            color: var(--muted);
+            font-size: 12px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.18s;
+            font-family: 'DM Sans', sans-serif;
+        }
+
+        .pill:hover {
+            border-color: var(--border-hover);
+            color: var(--text);
+        }
+
+        .pill.active {
+            background: var(--accent);
+            border-color: var(--accent);
+            color: #0d0d0f;
+            font-weight: 600;
         }
 
         /* ─── Game Grid ─── */
         #game-list {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(148px, 1fr));
-            gap: 18px;
+            gap: 20px;
         }
 
         .game-link {
@@ -350,9 +515,16 @@
             align-items: center;
             text-decoration: none;
             color: var(--text);
-            gap: 8px;
+            gap: 9px;
             cursor: pointer;
             position: relative;
+        }
+
+        .game-thumb-wrap {
+            width: 100%;
+            position: relative;
+            overflow: hidden;
+            border-radius: var(--card-radius);
         }
 
         .game-thumb {
@@ -361,8 +533,34 @@
             object-fit: cover;
             border-radius: var(--card-radius);
             border: 1px solid var(--border);
-            transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+            transition: transform 0.28s ease, box-shadow 0.28s ease, border-color 0.28s ease;
             display: block;
+        }
+
+        .game-overlay {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(to top, rgba(7,7,10,0.85) 0%, transparent 50%);
+            border-radius: var(--card-radius);
+            opacity: 0;
+            transition: opacity 0.25s;
+            display: flex;
+            align-items: flex-end;
+            justify-content: center;
+            padding-bottom: 10px;
+        }
+
+        .game-play-btn {
+            background: var(--accent);
+            color: #0d0d0f;
+            font-size: 11px;
+            font-weight: 700;
+            padding: 5px 14px;
+            border-radius: 100px;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+            transform: translateY(6px);
+            transition: transform 0.2s;
         }
 
         .game-name {
@@ -372,12 +570,21 @@
             color: var(--muted);
             transition: color 0.2s;
             line-height: 1.3;
+            padding: 0 4px;
         }
 
         .game-link:hover .game-thumb {
-            transform: translateY(-5px) scale(1.03);
-            box-shadow: 0 12px 32px rgba(0,0,0,0.5), 0 0 0 1px rgba(232,184,75,0.2);
-            border-color: rgba(232,184,75,0.2);
+            transform: translateY(-5px) scale(1.04);
+            box-shadow: 0 14px 36px rgba(0,0,0,0.6), 0 0 0 1px rgba(232,184,75,0.22);
+            border-color: rgba(232,184,75,0.22);
+        }
+
+        .game-link:hover .game-overlay {
+            opacity: 1;
+        }
+
+        .game-link:hover .game-play-btn {
+            transform: translateY(0);
         }
 
         .game-link:hover .game-name {
@@ -395,11 +602,6 @@
         #no-results .nr-icon { font-size: 40px; margin-bottom: 12px; }
         #no-results p { font-size: 15px; }
 
-        /* ─── Spinny mode ─── */
-        #game-list.spinning {
-            transform-origin: center top;
-        }
-
         /* ─── Footer ─── */
         footer {
             text-align: center;
@@ -407,20 +609,17 @@
             color: var(--muted);
             font-size: 12px;
             border-top: 1px solid var(--border);
-            margin-top: 60px;
+            margin-top: 64px;
         }
 
         footer a { color: var(--muted); text-decoration: underline; }
 
-        /* ─── About:blank toast ─── */
-        #ab-toast {
+        /* ─── Toasts ─── */
+        .toast {
             position: fixed;
             bottom: 24px;
             left: 50%;
             transform: translateX(-50%) translateY(80px);
-            background: #1a2e1a;
-            border: 1px solid #3d7a3d;
-            color: #6fcf6f;
             padding: 10px 20px;
             border-radius: 100px;
             font-size: 13px;
@@ -431,32 +630,149 @@
             pointer-events: none;
         }
 
-        #ab-toast.show { transform: translateX(-50%) translateY(0); }
+        .toast.show { transform: translateX(-50%) translateY(0); }
+
+        #ab-toast {
+            background: #162116;
+            border: 1px solid #2e6b2e;
+            color: #6fcf6f;
+        }
+
+        /* ─── Modal for direct about:blank ─── */
+        #ab-modal {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.7);
+            backdrop-filter: blur(6px);
+            z-index: 9998;
+            align-items: center;
+            justify-content: center;
+        }
+
+        #ab-modal.open {
+            display: flex;
+        }
+
+        .modal-box {
+            background: var(--surface2);
+            border: 1px solid var(--border-hover);
+            border-radius: 18px;
+            padding: 32px;
+            max-width: 420px;
+            width: 90%;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .modal-box::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, var(--accent2), var(--accent), #7c5cbf);
+        }
+
+        .modal-title {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 1.7rem;
+            letter-spacing: 0.06em;
+            margin-bottom: 6px;
+        }
+
+        .modal-sub {
+            font-size: 13px;
+            color: var(--muted);
+            margin-bottom: 20px;
+            line-height: 1.6;
+        }
+
+        .modal-input {
+            width: 100%;
+            padding: 11px 14px;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            color: var(--text);
+            font-size: 14px;
+            font-family: 'DM Sans', sans-serif;
+            outline: none;
+            margin-bottom: 12px;
+            transition: border-color 0.2s;
+        }
+
+        .modal-input:focus {
+            border-color: rgba(232,184,75,0.4);
+        }
+
+        .modal-actions {
+            display: flex;
+            gap: 8px;
+            justify-content: flex-end;
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 12px; right: 14px;
+            background: none;
+            border: none;
+            color: var(--muted);
+            font-size: 22px;
+            cursor: pointer;
+            line-height: 1;
+            transition: color 0.2s;
+        }
+
+        .modal-close:hover { color: var(--text); }
 
         /* ─── Responsive ─── */
-        @media (max-width: 640px) {
+        @media (max-width: 700px) {
             header { flex-wrap: wrap; }
             .spotlight { display: none; }
-            #game-list { grid-template-columns: repeat(auto-fill, minmax(110px, 1fr)); gap: 12px; }
+            #game-list { grid-template-columns: repeat(auto-fill, minmax(110px, 1fr)); gap: 14px; }
+            .stats-bar { display: none; }
         }
     </style>
 </head>
 <body>
+
+<!-- Ambient glow -->
+<div class="ambient ambient-1"></div>
+<div class="ambient ambient-2"></div>
+<div class="ambient ambient-3"></div>
+
+<!-- Star canvas -->
+<canvas id="star-canvas"></canvas>
+
 <div class="page">
 
     <!-- Header -->
     <header>
         <div class="logo" onclick="spinnywheel()">
-            <img src="favicon.png" alt="logo" class="logo-icon" id="logo-img">
-            <div class="logo-text">Chicken <span>Kings</span> Vault</div>
+            <div class="logo-icon-wrap">
+                <div class="logo-halo"></div>
+                <img src="favicon.png" alt="logo" class="logo-icon" id="logo-img">
+            </div>
+            <div>
+                <div class="logo-text">Chicken <span>Kings</span> Vault</div>
+                <span class="logo-tag">Game Library</span>
+            </div>
         </div>
 
         <div class="header-actions">
-            <button class="btn btn-ab" id="ab-btn" onclick="toggleAboutBlank()" title="about:blank disguise — games open in a hidden tab with a clean URL">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
-                about:blank
+            <!-- Direct about:blank opener -->
+            <button class="btn btn-ab-direct" onclick="openDirectAboutBlank()" title="Open a blank tab — paste any URL to play in disguise">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+                Open about:blank
             </button>
-            <a class="btn discord-btn" href="https://discord.gg/RgGKcZxq4T" target="_blank" rel="noopener noreferrer" title="Join the Discord server">
+
+            <!-- Per-game about:blank toggle -->
+            <button class="btn btn-ab" id="ab-btn" onclick="toggleAboutBlank()" title="Games open in a hidden tab with a clean URL">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+                Game cloak
+            </button>
+
+            <a class="btn discord-btn" href="https://discord.gg/RgGKcZxq4T" target="_blank" rel="noopener noreferrer">
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M20.317 4.37a19.79 19.79 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028 14.09 14.09 0 0 0 1.226-1.994.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03z"/></svg>
                 Discord
             </a>
@@ -465,8 +781,6 @@
 
     <!-- Hero bar -->
     <div class="hero-bar">
-
-        <!-- Spotlight random game -->
         <a class="spotlight" id="spotlight-link" href="#" onclick="handleSpotlight(event)">
             <div class="spotlight-label">✦ Featured</div>
             <img id="spotlight-img" src="" alt="">
@@ -474,7 +788,6 @@
             <div class="spotlight-sub">click to play</div>
         </a>
 
-        <!-- Search + controls -->
         <div class="search-wrap">
             <div class="search-box">
                 <div class="search-icon">
@@ -488,7 +801,7 @@
                 <div class="btn-row">
                     <button class="btn" id="random-btn" onclick="pickRandom()">
                         <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="16 3 21 3 21 8"/><line x1="4" y1="20" x2="21" y2="3"/><polyline points="21 16 21 21 16 21"/><line x1="15" y1="15" x2="21" y2="21"/></svg>
-                        Random game
+                        Random
                     </button>
                     <button class="btn" id="spinny-btn" onclick="spinnywheel()">
                         <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21.5 2v6h-6M2.5 22v-6h6M2 11.5a10 10 0 0 1 18.8-4.3M22 12.5a10 10 0 0 1-18.8 4.2"/></svg>
@@ -499,9 +812,30 @@
         </div>
     </div>
 
+    <!-- Stats bar -->
+    <div class="stats-bar" id="stats-bar">
+        <div class="stat-item">
+            <div class="stat-dot gold"></div>
+            <span class="stat-label">Games</span>
+            <span class="stat-value" id="stat-total">—</span>
+        </div>
+        <div class="stat-item">
+            <div class="stat-dot purple"></div>
+            <span class="stat-label">Cloak Mode</span>
+            <span class="stat-value" id="stat-cloak">Off</span>
+        </div>
+        <div class="stat-item">
+            <div class="stat-dot red"></div>
+            <span class="stat-label">Version</span>
+            <span class="stat-value">2.0</span>
+        </div>
+        <div class="stats-spacer"></div>
+        <div style="font-size:11px; color: var(--muted); letter-spacing:0.08em; text-transform:uppercase;">Chicken Kings Vault</div>
+    </div>
+
     <div class="divider"></div>
 
-    <!-- Game Grid (games.js injects .game-link anchors here) -->
+    <!-- Game Grid -->
     <div id="game-list"></div>
 
     <div id="no-results">
@@ -514,28 +848,166 @@
     </footer>
 </div>
 
-<!-- about:blank toast notification -->
-<div id="ab-toast">🔒 about:blank mode on — games open in disguised tabs</div>
+<!-- about:blank mode toast -->
+<div class="toast" id="ab-toast">🔒 Cloak on — games open in disguised tabs</div>
 
-<!-- Load game list from games.js (must define window.games as HTML string or array) -->
+<!-- Direct about:blank modal -->
+<div id="ab-modal" role="dialog" aria-modal="true" aria-label="Open in about:blank">
+    <div class="modal-box">
+        <button class="modal-close" onclick="closeModal()" aria-label="Close">×</button>
+        <div class="modal-title">Open in <span style="color:var(--accent)">about:blank</span></div>
+        <div class="modal-sub">Paste any URL below. It will open in a new tab that shows <code style="color:var(--accent);font-size:12px">about:blank</code> in the address bar.</div>
+        <input class="modal-input" type="url" id="ab-url-input" placeholder="https://example.com/game" autocomplete="off">
+        <div class="modal-actions">
+            <button class="btn" onclick="closeModal()">Cancel</button>
+            <button class="btn btn-accent" onclick="launchFromModal()">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+                Launch
+            </button>
+        </div>
+    </div>
+</div>
+
 <script src="games.js"></script>
 
 <script>
+/* ─── STARS ──────────────────────────────────────────────────────── */
 (function () {
-    /* ── Inject games ───────────────────────────────────────────────── */
+    const canvas = document.getElementById('star-canvas');
+    const ctx = canvas.getContext('2d');
+
+    function resize() {
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+    }
+    resize();
+    window.addEventListener('resize', resize);
+
+    const STAR_COUNT = 220;
+    const SPARKLE_COUNT = 18;
+
+    const stars = Array.from({ length: STAR_COUNT }, () => ({
+        x: Math.random() * window.innerWidth,
+        y: Math.random() * window.innerHeight,
+        r: Math.random() * 1.4 + 0.2,
+        alpha: Math.random() * 0.7 + 0.1,
+        speed: Math.random() * 0.004 + 0.001,
+        phase: Math.random() * Math.PI * 2,
+        color: Math.random() < 0.15
+            ? (Math.random() < 0.5 ? '#e8b84b' : '#a07de8')
+            : '#ffffff',
+    }));
+
+    const sparkles = Array.from({ length: SPARKLE_COUNT }, () => makeSparkle());
+
+    function makeSparkle() {
+        return {
+            x: Math.random() * window.innerWidth,
+            y: Math.random() * window.innerHeight,
+            size: Math.random() * 10 + 6,
+            alpha: 0,
+            growing: true,
+            speed: Math.random() * 0.018 + 0.008,
+            rotation: Math.random() * Math.PI * 2,
+            color: Math.random() < 0.6 ? '#e8b84b' : (Math.random() < 0.5 ? '#a07de8' : '#c8503a'),
+        };
+    }
+
+    function drawSparkle(sp) {
+        ctx.save();
+        ctx.translate(sp.x, sp.y);
+        ctx.rotate(sp.rotation);
+        ctx.globalAlpha = sp.alpha;
+
+        const s = sp.size;
+        ctx.fillStyle = sp.color;
+        ctx.shadowColor = sp.color;
+        ctx.shadowBlur = 8;
+
+        ctx.beginPath();
+        for (let i = 0; i < 4; i++) {
+            ctx.save();
+            ctx.rotate((i * Math.PI) / 2);
+            ctx.moveTo(0, 0);
+            ctx.lineTo(s * 0.12, s * 0.12);
+            ctx.lineTo(0, s);
+            ctx.lineTo(-s * 0.12, s * 0.12);
+            ctx.restore();
+        }
+        ctx.fill();
+        ctx.restore();
+    }
+
+    let t = 0;
+
+    function tick() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        t++;
+
+        // Draw stars
+        for (const s of stars) {
+            const a = s.alpha * (0.6 + 0.4 * Math.sin(t * s.speed + s.phase));
+            ctx.globalAlpha = a;
+            ctx.fillStyle = s.color;
+            if (s.color !== '#ffffff') {
+                ctx.shadowColor = s.color;
+                ctx.shadowBlur = 4;
+            } else {
+                ctx.shadowBlur = 0;
+            }
+            ctx.beginPath();
+            ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
+            ctx.fill();
+        }
+
+        ctx.shadowBlur = 0;
+
+        // Draw sparkles
+        for (const sp of sparkles) {
+            if (sp.growing) {
+                sp.alpha += sp.speed;
+                if (sp.alpha >= 0.85) {
+                    sp.alpha = 0.85;
+                    sp.growing = false;
+                }
+            } else {
+                sp.alpha -= sp.speed * 0.7;
+                if (sp.alpha <= 0) {
+                    Object.assign(sp, makeSparkle(), { alpha: 0, growing: true });
+                }
+            }
+            sp.rotation += 0.01;
+            drawSparkle(sp);
+        }
+
+        ctx.globalAlpha = 1;
+        requestAnimationFrame(tick);
+    }
+
+    tick();
+})();
+
+/* ─── MAIN ───────────────────────────────────────────────────────── */
+(function () {
     const gameList = document.getElementById('game-list');
 
-    // games.js sets window.games as an HTML string of .game-link anchors
     if (typeof games !== 'undefined') {
         gameList.innerHTML = games;
     }
 
-    // Restyle injected thumbnails to use our class
     gameList.querySelectorAll('.game-link img').forEach(img => {
         img.classList.add('game-thumb');
+        // Wrap in a div for overlay effect
+        const wrap = document.createElement('div');
+        wrap.className = 'game-thumb-wrap';
+        const overlay = document.createElement('div');
+        overlay.className = 'game-overlay';
+        overlay.innerHTML = '<div class="game-play-btn">▶ Play</div>';
+        img.parentNode.insertBefore(wrap, img);
+        wrap.appendChild(img);
+        wrap.appendChild(overlay);
     });
 
-    // Wrap text nodes in a span for styling
     gameList.querySelectorAll('.game-link').forEach(a => {
         a.childNodes.forEach(n => {
             if (n.nodeType === 3 && n.textContent.trim()) {
@@ -547,7 +1019,7 @@
         });
     });
 
-    /* ── Sort alphabetically ────────────────────────────────────────── */
+    // Sort alphabetically
     const items = Array.from(gameList.querySelectorAll('.game-link'));
     items.sort((a, b) =>
         (a.textContent || '').trim().toLowerCase()
@@ -556,8 +1028,9 @@
     items.forEach(i => gameList.appendChild(i));
 
     const total = items.length;
+    document.getElementById('stat-total').textContent = total;
 
-    /* ── Search ─────────────────────────────────────────────────────── */
+    /* ── Search ── */
     const input = document.getElementById('search-input');
     const clearBtn = document.getElementById('search-clear');
     const countEl = document.getElementById('search-count');
@@ -575,12 +1048,8 @@
 
     function filterGames() {
         const q = input.value.trim().toLowerCase();
-
-        // easter egg
         if (q === 'end') { window.open('https://youtu.be/eVTXPUF4Oz4?si=fJegVrBYO1yf0I80'); }
-
         clearBtn.style.display = q ? 'flex' : 'none';
-
         let visible = 0;
         items.forEach(a => {
             const title = (a.textContent || '').trim().toLowerCase();
@@ -588,7 +1057,6 @@
             a.style.display = show ? '' : 'none';
             if (show) visible++;
         });
-
         noResults.style.display = visible === 0 ? 'block' : 'none';
         updateCount(visible);
     }
@@ -602,7 +1070,7 @@
         input.focus();
     };
 
-    /* ── Spotlight (random featured game) ──────────────────────────── */
+    /* ── Spotlight ── */
     function pickSpotlight() {
         if (!items.length) return;
         const r = items[Math.floor(Math.random() * items.length)];
@@ -616,34 +1084,21 @@
         spotLink.dataset.href = r.href || '';
     }
 
-    window.pickRandom = pickSpotlight; // random btn triggers same
+    window.pickRandom = pickSpotlight;
     pickSpotlight();
 
-    /* ── Handle spotlight click ─────────────────────────────────────── */
     window.handleSpotlight = function (e) {
         e.preventDefault();
         const url = document.getElementById('spotlight-link').dataset.href;
         if (!url) return;
-        if (aboutBlankMode) {
-            openInAboutBlank(url);
-        } else {
-            window.open(url, '_blank', 'noopener');
-        }
+        if (aboutBlankMode) openInAboutBlank(url);
+        else window.open(url, '_blank', 'noopener');
     };
 
-    /* ─────────────────────────────────────────────────────────────────
-       ABOUT:BLANK MODE
-       The real disguise: opens a new tab whose URL/title stays as
-       about:blank but renders the game inside a full-screen iframe.
-       The tab shows "about:blank" in the address bar — not the game URL.
-    ───────────────────────────────────────────────────────────────── */
-    let aboutBlankMode = false;
-
+    /* ── about:blank core ── */
     function openInAboutBlank(url) {
         const w = window.open('about:blank', '_blank');
-        if (!w) { alert('Allow pop-ups for about:blank mode to work!'); return; }
-
-        // Write a full-screen iframe into the blank tab
+        if (!w) { alert('Please allow pop-ups for this feature.'); return; }
         w.document.open();
         w.document.write(
             '<!DOCTYPE html><html><head>' +
@@ -656,18 +1111,21 @@
         w.document.close();
     }
 
+    /* ── Per-game cloak toggle ── */
+    let aboutBlankMode = false;
+
     window.toggleAboutBlank = function () {
         aboutBlankMode = !aboutBlankMode;
         const btn = document.getElementById('ab-btn');
         const toast = document.getElementById('ab-toast');
+        const statCloak = document.getElementById('stat-cloak');
         btn.classList.toggle('active', aboutBlankMode);
         toast.classList.toggle('show', aboutBlankMode);
-        if (aboutBlankMode) {
-            setTimeout(() => toast.classList.remove('show'), 3500);
-        }
+        statCloak.textContent = aboutBlankMode ? 'On' : 'Off';
+        statCloak.style.color = aboutBlankMode ? '#5ecf5e' : '';
+        if (aboutBlankMode) setTimeout(() => toast.classList.remove('show'), 3500);
     };
 
-    // Capture all game-link clicks and redirect through about:blank if active
     document.addEventListener('click', function (e) {
         if (!aboutBlankMode) return;
         const link = e.target.closest('#game-list .game-link');
@@ -677,7 +1135,35 @@
         openInAboutBlank(link.href);
     }, true);
 
-    /* ── Spinny wheel ───────────────────────────────────────────────── */
+    /* ── Direct about:blank button ── */
+    window.openDirectAboutBlank = function () {
+        const modal = document.getElementById('ab-modal');
+        modal.classList.add('open');
+        setTimeout(() => document.getElementById('ab-url-input').focus(), 80);
+    };
+
+    window.closeModal = function () {
+        document.getElementById('ab-modal').classList.remove('open');
+        document.getElementById('ab-url-input').value = '';
+    };
+
+    window.launchFromModal = function () {
+        const url = document.getElementById('ab-url-input').value.trim();
+        if (!url) return;
+        openInAboutBlank(url);
+        closeModal();
+    };
+
+    document.getElementById('ab-url-input').addEventListener('keydown', e => {
+        if (e.key === 'Enter') window.launchFromModal();
+        if (e.key === 'Escape') window.closeModal();
+    });
+
+    document.getElementById('ab-modal').addEventListener('click', function (e) {
+        if (e.target === this) window.closeModal();
+    });
+
+    /* ── Spin ── */
     let spinning = false;
     let spinAngle = 0;
     let spinInterval = null;
@@ -696,7 +1182,6 @@
             btn.style.color = '';
             clearInterval(spinInterval);
             spinInterval = null;
-            // snap back smoothly
             gameList.style.transition = 'transform 0.6s cubic-bezier(0.25,1,0.5,1)';
             gameList.style.transform = 'rotate(0deg)';
             setTimeout(() => { gameList.style.transition = ''; spinAngle = 0; }, 650);

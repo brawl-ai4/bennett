@@ -2,6 +2,10 @@ const games =`
 <a class="game-link" href="gamefiles/hollowknight.html">
     <img src="gameimages/hollowknight.png" alt="Hollow Knight Cover">
     <div>Hollow Knight</div>
+  <a class="game-link" href="https://interstellar-roan-pi.vercel.app/" target="_blank" rel="noopener noreferrer">
+    <img src="https://interstellar-roan-pi.vercel.app/favicon.ico" alt="Interstellar">
+    Interstellar
+</a>
 </a>
 <a class="game-link" href="gamefiles/buckshotroulette.html">
     <img src="gameimages/buckshotroulette.jpg" alt="Buckshot Roulette Cover">

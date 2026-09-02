@@ -1,12 +1,13 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <link rel="icon" type="image/png" href="favicon.png">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Chicken Kings Vault</title>
+    <title>Blooket</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,400&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,400&family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
     <style>
         *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -26,6 +27,14 @@
             --accent-glow: rgba(232,184,75,0.22);
             --radius: 12px;
             --card-radius: 14px;
+            /* Blooket colors */
+            --blook-blue: #0b6efd;
+            --blook-blue-dark: #0a58ca;
+            --blook-sky: #4dabf7;
+            --blook-bg: #f0f4ff;
+            --blook-card: #ffffff;
+            --blook-text: #1e293b;
+            --blook-muted: #64748b;
         }
 
         html, body {
@@ -38,7 +47,358 @@
             overflow-x: hidden;
         }
 
-        /* ─── Star Canvas ─── */
+        /* ═══════════════════════════════════════════
+           START SCREEN — Blooket Join Style
+           ═══════════════════════════════════════════ */
+        #start-screen {
+            position: fixed;
+            inset: 0;
+            z-index: 10000;
+            background: linear-gradient(160deg, #e8f0fe 0%, #d4e4fc 40%, #c5dbf8 100%);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            transition: opacity 0.6s ease, visibility 0.6s;
+        }
+
+        #start-screen.hidden {
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none;
+        }
+
+        /* Decorative floating shapes like Blooket */
+        .blook-blob {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(60px);
+            opacity: 0.45;
+            pointer-events: none;
+            animation: blobFloat 12s ease-in-out infinite;
+        }
+        .blook-blob-1 { width: 380px; height: 380px; background: #93c5fd; top: -80px; left: -60px; }
+        .blook-blob-2 { width: 300px; height: 300px; background: #a5b4fc; bottom: -40px; right: -40px; animation-delay: -4s; }
+        .blook-blob-3 { width: 220px; height: 220px; background: #67e8f9; top: 40%; left: 70%; animation-delay: -7s; opacity: 0.3; }
+
+        @keyframes blobFloat {
+            0%, 100% { transform: translate(0, 0) scale(1); }
+            33% { transform: translate(30px, -20px) scale(1.05); }
+            66% { transform: translate(-20px, 25px) scale(0.97); }
+        }
+
+        /* Subtle pattern */
+        .blook-pattern {
+            position: absolute;
+            inset: 0;
+            background-image: radial-gradient(circle at 20% 30%, rgba(59,130,246,0.06) 0%, transparent 50%),
+                              radial-gradient(circle at 80% 70%, rgba(99,102,241,0.05) 0%, transparent 45%);
+            pointer-events: none;
+        }
+
+        .join-card {
+            position: relative;
+            z-index: 2;
+            background: var(--blook-card);
+            border-radius: 24px;
+            padding: 48px 44px 40px;
+            width: min(420px, 92vw);
+            box-shadow:
+                0 4px 6px -1px rgba(15, 23, 42, 0.06),
+                0 20px 40px -8px rgba(15, 23, 42, 0.12),
+                0 0 0 1px rgba(15, 23, 42, 0.04);
+            text-align: center;
+            animation: cardIn 0.7s cubic-bezier(0.22, 1, 0.36, 1) both;
+        }
+
+        @keyframes cardIn {
+            from { opacity: 0; transform: translateY(28px) scale(0.96); }
+            to { opacity: 1; transform: translateY(0) scale(1); }
+        }
+
+        .blooket-logo {
+            font-family: 'Nunito', sans-serif;
+            font-weight: 900;
+            font-size: 2.6rem;
+            letter-spacing: -0.02em;
+            color: var(--blook-blue);
+            margin-bottom: 6px;
+            line-height: 1;
+            text-shadow: 0 2px 0 rgba(11, 110, 253, 0.15);
+            user-select: none;
+        }
+
+        .blooket-logo span {
+            color: #1e40af;
+        }
+
+        .join-tagline {
+            font-family: 'Nunito', sans-serif;
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--blook-muted);
+            margin-bottom: 32px;
+        }
+
+        .join-label {
+            display: block;
+            text-align: left;
+            font-family: 'Nunito', sans-serif;
+            font-size: 13px;
+            font-weight: 700;
+            color: var(--blook-text);
+            margin-bottom: 8px;
+            letter-spacing: 0.02em;
+        }
+
+        .join-input-wrap {
+            position: relative;
+            margin-bottom: 20px;
+        }
+
+        .join-input {
+            width: 100%;
+            padding: 16px 18px;
+            font-family: 'Nunito', sans-serif;
+            font-size: 20px;
+            font-weight: 700;
+            letter-spacing: 0.12em;
+            text-align: center;
+            border: 2.5px solid #e2e8f0;
+            border-radius: 14px;
+            background: #f8fafc;
+            color: var(--blook-text);
+            outline: none;
+            transition: border-color 0.2s, box-shadow 0.2s, background 0.2s;
+        }
+
+        .join-input::placeholder {
+            color: #94a3b8;
+            font-weight: 600;
+            letter-spacing: 0.04em;
+            font-size: 16px;
+        }
+
+        .join-input:focus {
+            border-color: var(--blook-blue);
+            background: #fff;
+            box-shadow: 0 0 0 4px rgba(11, 110, 253, 0.15);
+        }
+
+        .join-input.error {
+            border-color: #ef4444;
+            animation: shake 0.4s ease;
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            20% { transform: translateX(-8px); }
+            40% { transform: translateX(8px); }
+            60% { transform: translateX(-6px); }
+            80% { transform: translateX(6px); }
+        }
+
+        .join-btn {
+            width: 100%;
+            padding: 15px 24px;
+            font-family: 'Nunito', sans-serif;
+            font-size: 17px;
+            font-weight: 800;
+            color: #fff;
+            background: linear-gradient(180deg, #3b82f6 0%, var(--blook-blue) 100%);
+            border: none;
+            border-radius: 14px;
+            cursor: pointer;
+            box-shadow: 0 4px 0 #1d4ed8, 0 6px 16px rgba(11, 110, 253, 0.35);
+            transition: transform 0.12s, box-shadow 0.12s, filter 0.15s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .join-btn:hover {
+            filter: brightness(1.06);
+            transform: translateY(-1px);
+            box-shadow: 0 5px 0 #1d4ed8, 0 8px 20px rgba(11, 110, 253, 0.4);
+        }
+
+        .join-btn:active {
+            transform: translateY(3px);
+            box-shadow: 0 1px 0 #1d4ed8, 0 2px 8px rgba(11, 110, 253, 0.3);
+        }
+
+        .join-btn:disabled {
+            opacity: 0.7;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .join-error {
+            font-family: 'Nunito', sans-serif;
+            font-size: 13px;
+            font-weight: 600;
+            color: #ef4444;
+            margin-top: 12px;
+            min-height: 20px;
+            opacity: 0;
+            transition: opacity 0.25s;
+        }
+
+        .join-error.show {
+            opacity: 1;
+        }
+
+        .join-footer {
+            margin-top: 28px;
+            font-family: 'Nunito', sans-serif;
+            font-size: 13px;
+            color: var(--blook-muted);
+        }
+
+        .join-footer a {
+            color: var(--blook-blue);
+            font-weight: 700;
+            text-decoration: none;
+        }
+
+        .join-footer a:hover {
+            text-decoration: underline;
+        }
+
+        /* Decorative blooks / circles */
+        .deco-circle {
+            position: absolute;
+            border-radius: 50%;
+            border: 3px solid rgba(59, 130, 246, 0.15);
+            pointer-events: none;
+        }
+        .deco-1 { width: 80px; height: 80px; top: 12%; left: 8%; animation: spinSlow 20s linear infinite; }
+        .deco-2 { width: 50px; height: 50px; bottom: 18%; left: 12%; animation: spinSlow 15s linear infinite reverse; }
+        .deco-3 { width: 64px; height: 64px; top: 20%; right: 10%; animation: spinSlow 18s linear infinite; }
+        .deco-4 { width: 36px; height: 36px; bottom: 22%; right: 14%; animation: spinSlow 12s linear infinite reverse; }
+
+        @keyframes spinSlow {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        /* ═══════════════════════════════════════════
+           TRANSITION OVERLAY
+           ═══════════════════════════════════════════ */
+        #transition-overlay {
+            position: fixed;
+            inset: 0;
+            z-index: 10001;
+            pointer-events: none;
+            opacity: 0;
+            visibility: hidden;
+        }
+
+        #transition-overlay.active {
+            opacity: 1;
+            visibility: visible;
+            pointer-events: auto;
+        }
+
+        .trans-bg {
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(circle at center, #1e3a8a 0%, #0f172a 70%);
+            opacity: 0;
+            transition: opacity 0.5s ease;
+        }
+
+        #transition-overlay.active .trans-bg {
+            opacity: 1;
+        }
+
+        .trans-content {
+            position: absolute;
+            inset: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 20px;
+        }
+
+        .trans-ring {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            border: 4px solid transparent;
+            border-top-color: #60a5fa;
+            border-right-color: #a78bfa;
+            animation: spinRing 0.9s linear infinite;
+            opacity: 0;
+            transform: scale(0.5);
+            transition: opacity 0.4s, transform 0.5s cubic-bezier(0.34,1.56,0.64,1);
+        }
+
+        #transition-overlay.active .trans-ring {
+            opacity: 1;
+            transform: scale(1);
+        }
+
+        @keyframes spinRing {
+            to { transform: rotate(360deg); }
+        }
+
+        .trans-text {
+            font-family: 'Nunito', sans-serif;
+            font-weight: 800;
+            font-size: 1.4rem;
+            color: #e0e7ff;
+            letter-spacing: 0.06em;
+            opacity: 0;
+            transform: translateY(12px);
+            transition: opacity 0.4s 0.2s, transform 0.4s 0.2s;
+        }
+
+        #transition-overlay.active .trans-text {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .trans-particles {
+            position: absolute;
+            inset: 0;
+            overflow: hidden;
+        }
+
+        .particle {
+            position: absolute;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #60a5fa;
+            opacity: 0;
+        }
+
+        /* Unlock flash */
+        .unlock-flash {
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(circle at center, rgba(232,184,75,0.9) 0%, transparent 60%);
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        /* ═══════════════════════════════════════════
+           MAIN SITE (original vault)
+           ═══════════════════════════════════════════ */
+        #main-site {
+            display: none;
+            opacity: 0;
+            transition: opacity 0.8s ease;
+        }
+
+        #main-site.visible {
+            display: block;
+            opacity: 1;
+        }
+
+        /* Star Canvas */
         #star-canvas {
             position: fixed;
             inset: 0;
@@ -46,7 +406,6 @@
             z-index: 0;
         }
 
-        /* ─── Ambient glow blobs ─── */
         .ambient {
             position: fixed;
             border-radius: 50%;
@@ -63,7 +422,6 @@
         @keyframes float2 { 0%,100%{transform:translate(0,0) scale(1)} 50%{transform:translate(-50px,-60px) scale(1.15)} }
         @keyframes float3 { 0%,100%{transform:translate(0,0)} 50%{transform:translate(-40px,50px)} }
 
-        /* ─── Layout ─── */
         .page {
             position: relative;
             z-index: 1;
@@ -72,7 +430,6 @@
             padding: 0 28px 100px;
         }
 
-        /* ─── Header ─── */
         header {
             display: flex;
             align-items: center;
@@ -136,7 +493,6 @@
             margin-top: 1px;
         }
 
-        /* ─── Header actions ─── */
         .header-actions {
             display: flex;
             align-items: center;
@@ -192,7 +548,6 @@
             box-shadow: 0 0 20px rgba(232,184,75,0.35);
         }
 
-        /* ─── about:blank states ─── */
         .btn-ab {
             position: relative;
         }
@@ -221,7 +576,6 @@
             50% { opacity: 0.4; transform: scale(0.65); }
         }
 
-        /* ─── Direct about:blank button ─── */
         .btn-ab-direct {
             background: linear-gradient(135deg, #1a2636 0%, #0f1620 100%);
             border-color: #2a4a6b;
@@ -248,7 +602,6 @@
             box-shadow: 0 0 16px rgba(88,101,242,0.3);
         }
 
-        /* ─── Hero bar ─── */
         .hero-bar {
             display: flex;
             align-items: stretch;
@@ -257,7 +610,6 @@
             flex-wrap: wrap;
         }
 
-        /* Spotlight */
         .spotlight {
             flex: 0 0 auto;
             width: 196px;
@@ -331,7 +683,6 @@
             color: var(--muted);
         }
 
-        /* Search area */
         .search-wrap {
             flex: 1 1 320px;
             display: flex;
@@ -416,7 +767,6 @@
             flex-wrap: wrap;
         }
 
-        /* ─── Stats bar ─── */
         .stats-bar {
             display: flex;
             align-items: center;
@@ -462,47 +812,12 @@
 
         .stats-spacer { flex: 1; }
 
-        /* ─── Divider ─── */
         .divider {
             height: 1px;
             background: linear-gradient(90deg, transparent, var(--border) 20%, var(--border) 80%, transparent);
             margin-bottom: 28px;
         }
 
-        /* ─── Category pills ─── */
-        .filter-row {
-            display: flex;
-            gap: 8px;
-            flex-wrap: wrap;
-            margin-bottom: 24px;
-        }
-
-        .pill {
-            padding: 5px 13px;
-            border-radius: 100px;
-            border: 1px solid var(--border);
-            background: var(--surface);
-            color: var(--muted);
-            font-size: 12px;
-            font-weight: 500;
-            cursor: pointer;
-            transition: all 0.18s;
-            font-family: 'DM Sans', sans-serif;
-        }
-
-        .pill:hover {
-            border-color: var(--border-hover);
-            color: var(--text);
-        }
-
-        .pill.active {
-            background: var(--accent);
-            border-color: var(--accent);
-            color: #0d0d0f;
-            font-weight: 600;
-        }
-
-        /* ─── Game Grid ─── */
         #game-list {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(148px, 1fr));
@@ -591,7 +906,6 @@
             color: var(--text);
         }
 
-        /* ─── No results ─── */
         #no-results {
             display: none;
             text-align: center;
@@ -602,7 +916,6 @@
         #no-results .nr-icon { font-size: 40px; margin-bottom: 12px; }
         #no-results p { font-size: 15px; }
 
-        /* ─── Footer ─── */
         footer {
             text-align: center;
             padding: 32px 0 0;
@@ -614,7 +927,6 @@
 
         footer a { color: var(--muted); text-decoration: underline; }
 
-        /* ─── Toasts ─── */
         .toast {
             position: fixed;
             bottom: 24px;
@@ -638,7 +950,6 @@
             color: #6fcf6f;
         }
 
-        /* ─── Modal for direct about:blank ─── */
         #ab-modal {
             display: none;
             position: fixed;
@@ -725,127 +1036,173 @@
 
         .modal-close:hover { color: var(--text); }
 
-        /* ─── Responsive ─── */
         @media (max-width: 700px) {
             header { flex-wrap: wrap; }
             .spotlight { display: none; }
             #game-list { grid-template-columns: repeat(auto-fill, minmax(110px, 1fr)); gap: 14px; }
             .stats-bar { display: none; }
+            .join-card { padding: 36px 28px 32px; }
+            .blooket-logo { font-size: 2.2rem; }
         }
     </style>
 </head>
 <body>
 
-<!-- Ambient glow -->
-<div class="ambient ambient-1"></div>
-<div class="ambient ambient-2"></div>
-<div class="ambient ambient-3"></div>
+<!-- ═══════════════ START SCREEN (Blooket Join Style) ═══════════════ -->
+<div id="start-screen">
+    <div class="blook-pattern"></div>
+    <div class="blook-blob blook-blob-1"></div>
+    <div class="blook-blob blook-blob-2"></div>
+    <div class="blook-blob blook-blob-3"></div>
+    <div class="deco-circle deco-1"></div>
+    <div class="deco-circle deco-2"></div>
+    <div class="deco-circle deco-3"></div>
+    <div class="deco-circle deco-4"></div>
 
-<!-- Star canvas -->
-<canvas id="star-canvas"></canvas>
+    <div class="join-card">
+        <div class="blooket-logo">Blook<span>et</span></div>
+        <div class="join-tagline">Enter a Game ID to join</div>
 
-<div class="page">
-
-    <!-- Header -->
-    <header>
-        <div class="logo" onclick="spinnywheel()">
-            <div class="logo-icon-wrap">
-                <div class="logo-halo"></div>
-                <img src="favicon.png" alt="logo" class="logo-icon" id="logo-img">
-            </div>
-            <div>
-                <div class="logo-text">Chicken <span>Kings</span> Vault</div>
-                <span class="logo-tag">Game Library</span>
-            </div>
+        <label class="join-label" for="game-id-input">Game ID</label>
+        <div class="join-input-wrap">
+            <input
+                type="text"
+                id="game-id-input"
+                class="join-input"
+                placeholder="Enter Game ID"
+                maxlength="8"
+                autocomplete="off"
+                inputmode="numeric"
+                autofocus
+            >
         </div>
 
-        <div class="header-actions">
-            <!-- Direct about:blank opener -->
-            <button class="btn btn-ab-direct" onclick="openDirectAboutBlank()" title="Open a blank tab — paste any URL to play in disguise">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
-                Open about:blank
-            </button>
+        <button class="join-btn" id="join-btn" onclick="attemptJoin()">
+            Join
+        </button>
 
-            <!-- Per-game about:blank toggle -->
-            <button class="btn btn-ab" id="ab-btn" onclick="toggleAboutBlank()" title="Games open in a hidden tab with a clean URL">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
-                Game cloak
-            </button>
+        <div class="join-error" id="join-error">Invalid Game ID</div>
 
-            <a class="btn discord-btn" href="https://discord.gg/RgGKcZxq4T" target="_blank" rel="noopener noreferrer">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M20.317 4.37a19.79 19.79 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028 14.09 14.09 0 0 0 1.226-1.994.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03z"/></svg>
-                Discord
+        <div class="join-footer">
+            Don't have a code? <a href="#" onclick="return false;">Host a game</a>
+        </div>
+    </div>
+</div>
+
+<!-- Transition overlay -->
+<div id="transition-overlay">
+    <div class="trans-bg"></div>
+    <div class="trans-particles" id="trans-particles"></div>
+    <div class="unlock-flash" id="unlock-flash"></div>
+    <div class="trans-content">
+        <div class="trans-ring"></div>
+        <div class="trans-text">Unlocking Vault…</div>
+    </div>
+</div>
+
+<!-- ═══════════════ MAIN SITE ═══════════════ -->
+<div id="main-site">
+    <div class="ambient ambient-1"></div>
+    <div class="ambient ambient-2"></div>
+    <div class="ambient ambient-3"></div>
+    <canvas id="star-canvas"></canvas>
+
+    <div class="page">
+        <header>
+            <div class="logo" onclick="spinnywheel()">
+                <div class="logo-icon-wrap">
+                    <div class="logo-halo"></div>
+                    <img src="favicon.png" alt="logo" class="logo-icon" id="logo-img">
+                </div>
+                <div>
+                    <div class="logo-text">Chicken <span>Kings</span> Vault</div>
+                    <span class="logo-tag">Game Library</span>
+                </div>
+            </div>
+
+            <div class="header-actions">
+                <button class="btn btn-ab-direct" onclick="openDirectAboutBlank()" title="Open a blank tab — paste any URL to play in disguise">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+                    Open about:blank
+                </button>
+
+                <button class="btn btn-ab" id="ab-btn" onclick="toggleAboutBlank()" title="Games open in a hidden tab with a clean URL">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+                    Game cloak
+                </button>
+
+                <a class="btn discord-btn" href="https://discord.gg/RgGKcZxq4T" target="_blank" rel="noopener noreferrer">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M20.317 4.37a19.79 19.79 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028 14.09 14.09 0 0 0 1.226-1.994.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03z"/></svg>
+                    Discord
+                </a>
+            </div>
+        </header>
+
+        <div class="hero-bar">
+            <a class="spotlight" id="spotlight-link" href="#" onclick="handleSpotlight(event)">
+                <div class="spotlight-label">✦ Featured</div>
+                <img id="spotlight-img" src="" alt="">
+                <div class="spotlight-name" id="spotlight-name">Loading…</div>
+                <div class="spotlight-sub">click to play</div>
             </a>
-        </div>
-    </header>
 
-    <!-- Hero bar -->
-    <div class="hero-bar">
-        <a class="spotlight" id="spotlight-link" href="#" onclick="handleSpotlight(event)">
-            <div class="spotlight-label">✦ Featured</div>
-            <img id="spotlight-img" src="" alt="">
-            <div class="spotlight-name" id="spotlight-name">Loading…</div>
-            <div class="spotlight-sub">click to play</div>
-        </a>
-
-        <div class="search-wrap">
-            <div class="search-box">
-                <div class="search-icon">
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+            <div class="search-wrap">
+                <div class="search-box">
+                    <div class="search-icon">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+                    </div>
+                    <input id="search-input" class="search-input" type="search" placeholder="Search games…" aria-label="Search games" autocomplete="off">
+                    <button class="search-clear" id="search-clear" aria-label="Clear search" onclick="clearSearch()">×</button>
                 </div>
-                <input id="search-input" class="search-input" type="search" placeholder="Search games…" aria-label="Search games" autocomplete="off">
-                <button class="search-clear" id="search-clear" aria-label="Clear search" onclick="clearSearch()">×</button>
-            </div>
-            <div class="search-meta">
-                <div class="search-count" id="search-count">Loading games…</div>
-                <div class="btn-row">
-                    <button class="btn" id="random-btn" onclick="pickRandom()">
-                        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="16 3 21 3 21 8"/><line x1="4" y1="20" x2="21" y2="3"/><polyline points="21 16 21 21 16 21"/><line x1="15" y1="15" x2="21" y2="21"/></svg>
-                        Random
-                    </button>
-                    <button class="btn" id="spinny-btn" onclick="spinnywheel()">
-                        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21.5 2v6h-6M2.5 22v-6h6M2 11.5a10 10 0 0 1 18.8-4.3M22 12.5a10 10 0 0 1-18.8 4.2"/></svg>
-                        Spin
-                    </button>
+                <div class="search-meta">
+                    <div class="search-count" id="search-count">Loading games…</div>
+                    <div class="btn-row">
+                        <button class="btn" id="random-btn" onclick="pickRandom()">
+                            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="16 3 21 3 21 8"/><line x1="4" y1="20" x2="21" y2="3"/><polyline points="21 16 21 21 16 21"/><line x1="15" y1="15" x2="21" y2="21"/></svg>
+                            Random
+                        </button>
+                        <button class="btn" id="spinny-btn" onclick="spinnywheel()">
+                            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21.5 2v6h-6M2.5 22v-6h6M2 11.5a10 10 0 0 1 18.8-4.3M22 12.5a10 10 0 0 1-18.8 4.2"/></svg>
+                            Spin
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
 
-    <!-- Stats bar -->
-    <div class="stats-bar" id="stats-bar">
-        <div class="stat-item">
-            <div class="stat-dot gold"></div>
-            <span class="stat-label">Games</span>
-            <span class="stat-value" id="stat-total">—</span>
+        <div class="stats-bar" id="stats-bar">
+            <div class="stat-item">
+                <div class="stat-dot gold"></div>
+                <span class="stat-label">Games</span>
+                <span class="stat-value" id="stat-total">—</span>
+            </div>
+            <div class="stat-item">
+                <div class="stat-dot purple"></div>
+                <span class="stat-label">Cloak Mode</span>
+                <span class="stat-value" id="stat-cloak">Off</span>
+            </div>
+            <div class="stat-item">
+                <div class="stat-dot red"></div>
+                <span class="stat-label">Version</span>
+                <span class="stat-value">2.1</span>
+            </div>
+            <div class="stats-spacer"></div>
+            <div style="font-size:11px; color: var(--muted); letter-spacing:0.08em; text-transform:uppercase;">Chicken Kings Vault</div>
         </div>
-        <div class="stat-item">
-            <div class="stat-dot purple"></div>
-            <span class="stat-label">Cloak Mode</span>
-            <span class="stat-value" id="stat-cloak">Off</span>
+
+        <div class="divider"></div>
+
+        <div id="game-list"></div>
+
+        <div id="no-results">
+            <div class="nr-icon">🔍</div>
+            <p>No games match your search.</p>
         </div>
-        <div class="stat-item">
-            <div class="stat-dot red"></div>
-            <span class="stat-label">Version</span>
-            <span class="stat-value">2.0</span>
-        </div>
-        <div class="stats-spacer"></div>
-        <div style="font-size:11px; color: var(--muted); letter-spacing:0.08em; text-transform:uppercase;">Chicken Kings Vault</div>
+
+        <footer>
+            <p>All game credits go to gn-math, truffled.lol and Ultimate Game Stash</p>
+        </footer>
     </div>
-
-    <div class="divider"></div>
-
-    <!-- Game Grid -->
-    <div id="game-list"></div>
-
-    <div id="no-results">
-        <div class="nr-icon">🔍</div>
-        <p>No games match your search.</p>
-    </div>
-
-    <footer>
-        <p>All game credits go to gn-math, truffled.lol and Ultimate Game Stash</p>
-    </footer>
 </div>
 
 <!-- about:blank mode toast -->
@@ -871,9 +1228,127 @@
 <script src="games.js"></script>
 
 <script>
-/* ─── STARS ──────────────────────────────────────────────────────── */
+/* ─── JOIN SCREEN LOGIC ──────────────────────────────────────────── */
 (function () {
+    const input = document.getElementById('game-id-input');
+    const errorEl = document.getElementById('join-error');
+    const btn = document.getElementById('join-btn');
+    const SECRET = '8989';
+
+    // Only allow digits
+    input.addEventListener('input', function () {
+        this.value = this.value.replace(/\D/g, '');
+        this.classList.remove('error');
+        errorEl.classList.remove('show');
+    });
+
+    input.addEventListener('keydown', function (e) {
+        if (e.key === 'Enter') attemptJoin();
+    });
+
+    window.attemptJoin = function () {
+        const code = input.value.trim();
+        if (!code) {
+            input.classList.add('error');
+            errorEl.textContent = 'Please enter a Game ID';
+            errorEl.classList.add('show');
+            return;
+        }
+
+        if (code === SECRET) {
+            btn.disabled = true;
+            btn.textContent = 'Joining…';
+            startTransition();
+        } else {
+            input.classList.add('error');
+            errorEl.textContent = 'Invalid Game ID';
+            errorEl.classList.add('show');
+            // Brief shake already handled by CSS
+            setTimeout(() => input.classList.remove('error'), 450);
+        }
+    };
+
+    function startTransition() {
+        const start = document.getElementById('start-screen');
+        const overlay = document.getElementById('transition-overlay');
+        const particles = document.getElementById('trans-particles');
+        const flash = document.getElementById('unlock-flash');
+
+        // Spawn particles
+        particles.innerHTML = '';
+        for (let i = 0; i < 40; i++) {
+            const p = document.createElement('div');
+            p.className = 'particle';
+            const colors = ['#60a5fa', '#a78bfa', '#e8b84b', '#34d399', '#f472b6'];
+            p.style.background = colors[Math.floor(Math.random() * colors.length)];
+            p.style.left = '50%';
+            p.style.top = '50%';
+            p.style.width = (4 + Math.random() * 10) + 'px';
+            p.style.height = p.style.width;
+            particles.appendChild(p);
+
+            const angle = Math.random() * Math.PI * 2;
+            const dist = 80 + Math.random() * 280;
+            const tx = Math.cos(angle) * dist;
+            const ty = Math.sin(angle) * dist;
+            const delay = Math.random() * 0.3;
+
+            p.animate([
+                { transform: 'translate(-50%, -50%) scale(0)', opacity: 0 },
+                { transform: `translate(calc(-50% + ${tx * 0.3}px), calc(-50% + ${ty * 0.3}px)) scale(1)`, opacity: 1, offset: 0.3 },
+                { transform: `translate(calc(-50% + ${tx}px), calc(-50% + ${ty}px)) scale(0.2)`, opacity: 0 }
+            ], {
+                duration: 900 + Math.random() * 500,
+                delay: delay * 1000,
+                easing: 'cubic-bezier(0.22, 1, 0.36, 1)',
+                fill: 'forwards'
+            });
+        }
+
+        // Activate overlay
+        overlay.classList.add('active');
+
+        // After short delay, hide start screen
+        setTimeout(() => {
+            start.classList.add('hidden');
+        }, 400);
+
+        // Gold flash near end
+        setTimeout(() => {
+            flash.style.transition = 'opacity 0.15s';
+            flash.style.opacity = '0.7';
+            setTimeout(() => {
+                flash.style.opacity = '0';
+            }, 180);
+        }, 1100);
+
+        // Reveal main site
+        setTimeout(() => {
+            const main = document.getElementById('main-site');
+            main.classList.add('visible');
+            document.title = 'Chicken Kings Vault';
+
+            // Fade out overlay
+            setTimeout(() => {
+                overlay.style.transition = 'opacity 0.7s ease';
+                overlay.style.opacity = '0';
+                setTimeout(() => {
+                    overlay.classList.remove('active');
+                    overlay.style.opacity = '';
+                    overlay.style.transition = '';
+                    // Init stars after reveal
+                    initStars();
+                }, 700);
+            }, 200);
+        }, 1400);
+    }
+})();
+
+/* ─── STARS ──────────────────────────────────────────────────────── */
+function initStars() {
     const canvas = document.getElementById('star-canvas');
+    if (!canvas || canvas.dataset.init) return;
+    canvas.dataset.init = '1';
     const ctx = canvas.getContext('2d');
 
     function resize() {
@@ -944,7 +1419,6 @@
         ctx.clearRect(0, 0, canvas.width, canvas.height);
         t++;
 
-        // Draw stars
         for (const s of stars) {
             const a = s.alpha * (0.6 + 0.4 * Math.sin(t * s.speed + s.phase));
             ctx.globalAlpha = a;
@@ -962,7 +1436,6 @@
 
         ctx.shadowBlur = 0;
 
-        // Draw sparkles
         for (const sp of sparkles) {
             if (sp.growing) {
                 sp.alpha += sp.speed;
@@ -985,9 +1458,9 @@
     }
 
     tick();
-})();
+}
 
-/* ─── MAIN ───────────────────────────────────────────────────────── */
+/* ─── MAIN SITE LOGIC ────────────────────────────────────────────── */
 (function () {
     const gameList = document.getElementById('game-list');
 
@@ -997,7 +1470,6 @@
 
     gameList.querySelectorAll('.game-link img').forEach(img => {
         img.classList.add('game-thumb');
-        // Wrap in a div for overlay effect
         const wrap = document.createElement('div');
         wrap.className = 'game-thumb-wrap';
         const overlay = document.createElement('div');
@@ -1019,7 +1491,6 @@
         });
     });
 
-    // Sort alphabetically
     const items = Array.from(gameList.querySelectorAll('.game-link'));
     items.sort((a, b) =>
         (a.textContent || '').trim().toLowerCase()
@@ -1030,7 +1501,6 @@
     const total = items.length;
     document.getElementById('stat-total').textContent = total;
 
-    /* ── Search ── */
     const input = document.getElementById('search-input');
     const clearBtn = document.getElementById('search-clear');
     const countEl = document.getElementById('search-count');
@@ -1070,7 +1540,6 @@
         input.focus();
     };
 
-    /* ── Spotlight ── */
     function pickSpotlight() {
         if (!items.length) return;
         const r = items[Math.floor(Math.random() * items.length)];
@@ -1095,7 +1564,6 @@
         else window.open(url, '_blank', 'noopener');
     };
 
-    /* ── about:blank core ── */
     function openInAboutBlank(url) {
         const w = window.open('about:blank', '_blank');
         if (!w) { alert('Please allow pop-ups for this feature.'); return; }
@@ -1111,7 +1579,6 @@
         w.document.close();
     }
 
-    /* ── Per-game cloak toggle ── */
     let aboutBlankMode = false;
 
     window.toggleAboutBlank = function () {
@@ -1135,7 +1602,6 @@
         openInAboutBlank(link.href);
     }, true);
 
-    /* ── Direct about:blank button ── */
     window.openDirectAboutBlank = function () {
         const modal = document.getElementById('ab-modal');
         modal.classList.add('open');
@@ -1163,7 +1629,6 @@
         if (e.target === this) window.closeModal();
     });
 
-    /* ── Spin ── */
     let spinning = false;
     let spinAngle = 0;
     let spinInterval = null;
@@ -1187,7 +1652,6 @@
             setTimeout(() => { gameList.style.transition = ''; spinAngle = 0; }, 650);
         }
     };
-
 })();
 </script>
 </body>

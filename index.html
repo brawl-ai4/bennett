@@ -2113,97 +2113,36 @@
     </style>
 </head>
 
-<body>
+<div class="join-card">
+    <div class="blooket-logo">Blook<span>et</span></div>
+    <div class="join-tagline">Enter a Game ID to join</div>
 
-<!-- =============================================================
-     START / JOIN SCREEN
-     ============================================================= -->
+    <label class="join-label" for="game-id-input">Game ID</label>
 
-<div id="start-screen">
-
-    <div class="join-background">
-
-        <div class="join-gradient"></div>
-        <div class="join-grid"></div>
-
-        <div class="join-glow one"></div>
-        <div class="join-glow two"></div>
-        <div class="join-glow three"></div>
-
-        <div class="join-shape square a"></div>
-        <div class="join-shape square b"></div>
-
-        <div class="join-shape circle a"></div>
-        <div class="join-shape circle b"></div>
-
-        <div class="join-shape diamond a"></div>
-        <div class="join-shape diamond b"></div>
-
+    <div class="join-input-wrap">
+        <input
+            type="text"
+            id="game-id-input"
+            class="join-input"
+            placeholder="Enter Game ID"
+            maxlength="8"
+            autocomplete="off"
+            inputmode="numeric"
+            autofocus
+        >
     </div>
 
-    <div class="join-card">
+    <button class="join-btn" id="join-btn" onclick="attemptJoin()">
+        Join
+    </button>
 
-        <div class="join-logo-wrap">
-            <div class="join-logo-shadow"></div>
+    <div class="join-error" id="join-error">Invalid Game ID</div>
 
-            <div class="blooket-logo">
-                Blook<span>et</span>
-            </div>
-        </div>
-
-        <div class="join-tagline">
-            Enter a Game ID to join
-        </div>
-
-        <label
-            class="join-label"
-            for="game-id-input"
-        >
-            Game ID
-        </label>
-
-        <div class="join-input-wrap">
-
-            <input
-                type="text"
-                id="game-id-input"
-                class="join-input"
-                placeholder="Enter Game ID"
-                maxlength="8"
-                autocomplete="off"
-                inputmode="numeric"
-                autofocus
-                aria-label="Game ID"
-            >
-
-        </div>
-
-        <button
-            class="join-btn"
-            id="join-btn"
-            type="button"
-            onclick="attemptJoin()"
-        >
-            Join
-        </button>
-
-        <div
-            class="join-error"
-            id="join-error"
-            aria-live="polite"
-        >
-            Invalid Game ID
-        </div>
-
-        <div class="join-footer">
-            Don't have a code?
-            <a href="#" onclick="return false;">
-                Host a game
-            </a>
-        </div>
-
+    <div class="join-footer">
+        Don't have a code? <a href="#" onclick="return false;">Host a game</a>
     </div>
 </div>
+
 
 
 <!-- =============================================================
